@@ -1,0 +1,1904 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0,
+          maximum-scale=1.0, user-scalable=no"
+    />
+
+    <!-- iOS Home Screen behaviour -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Missing Word" />
+
+    <title>Missing Word Grammar Quiz</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com/" />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      :root {
+        --font-chalk:
+          "Chalkboard SE", "Comic Sans MS", "Segoe Print", sans-serif;
+        --colour-btn-face: grey;
+        --colour-btn-active: grey;
+        --colour-btn-border: #000000;
+        --colour-heading-text: orange;
+        --colour-correct: #4caf50;
+        --colour-wrong: #e53935;
+        --colour-dim: #f0f0f0;
+        --colour-option-btn: #fff3d6;
+      }
+
+      .rotate-message {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: #0d1b33;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2em;
+      }
+      .rotate-message p {
+        color: var(--colour-heading-text);
+        -webkit-text-stroke: 0.8px darkorange;
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        font-size: clamp(1.2rem, 6vw, 2rem);
+        line-height: 1.4;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        max-width: 100vw;
+      }
+
+      body {
+        font-family: var(--font-chalk);
+        background-color: #14213d;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow: hidden;
+        transition: background 0.3s ease;
+      }
+
+      h1 {
+        font-family: var(--font-chalk);
+        color: var(--colour-heading-text);
+        width: 100%;
+        text-align: center;
+        letter-spacing: 0.03em;
+        flex-shrink: 0;
+        -webkit-text-stroke: 2px yellow;
+        font-size: clamp(1.4rem, 7vw, 3rem);
+        padding: 0.4em 0.5em 0.2em;
+        margin-top: max(16px, env(safe-area-inset-top, 16px));
+      }
+
+      .back-btn {
+        position: fixed;
+        top: max(16px, env(safe-area-inset-top, 16px));
+        left: max(16px, env(safe-area-inset-left, 16px));
+        z-index: 60;
+        display: flex;
+        align-items: center;
+        gap: 0.3em;
+        background: var(--colour-btn-face);
+        color: var(--colour-btn-border);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 999px;
+        padding: 0.4em 0.9em;
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        font-size: 1rem;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.1s ease;
+      }
+      .back-btn:active {
+        transform: translateY(2px);
+        background: var(--colour-btn-active);
+      }
+
+      .progress {
+        color: white;
+        -webkit-text-stroke: 1px darkorange;
+        font-weight: bold;
+        font-size: clamp(0.9rem, 4vw, 1.3rem);
+        text-align: center;
+        margin-bottom: 0.5em;
+        flex-shrink: 0;
+      }
+
+      /* START SCREEN */
+      .start-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3vh;
+        width: 100%;
+        padding: 2vh 6vw;
+      }
+
+      .start-title {
+        color: white;
+        -webkit-text-stroke: 1px darkorange;
+        font-size: clamp(1.2rem, 5.5vw, 1.9rem);
+        text-align: center;
+      }
+
+      .start-sub {
+        color: white;
+        opacity: 0.9;
+        font-size: clamp(0.85rem, 3.6vw, 1.1rem);
+        text-align: center;
+        max-width: 420px;
+      }
+
+      .start-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(14px, 4vw, 22px);
+        width: 100%;
+        max-width: 340px;
+      }
+
+      .start-buttons .btn {
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        color: #333;
+        background: var(--colour-btn-face);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 10px;
+        cursor: pointer;
+        height: clamp(56px, 11vh, 90px);
+        font-size: clamp(1.2rem, 6vw, 2rem);
+        transition:
+          transform 0.1s ease,
+          background 0.15s ease;
+      }
+      .start-buttons .btn:active {
+        transform: scale(0.97);
+        background: var(--colour-btn-active);
+      }
+
+      .game-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 0;
+        padding: 2vh 6vw 4vh;
+      }
+
+      .question-card {
+        background: white;
+        border: 3px solid var(--colour-btn-border);
+        border-radius: 20px;
+        padding: 1.2em 1.2em;
+        margin-bottom: 3vh;
+        text-align: center;
+        width: 100%;
+        max-width: 560px;
+      }
+      .question-label {
+        font-family: var(--font-chalk);
+        font-size: clamp(0.75rem, 3vw, 0.95rem);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #999;
+        margin-bottom: 0.5em;
+      }
+      .question-sentence {
+        font-size: clamp(1.15rem, 5.4vw, 1.9rem);
+        color: #222;
+        font-family: var(--font-chalk);
+        line-height: 1.5;
+      }
+      .question-sentence .blank {
+        display: inline-block;
+        min-width: 2.4em;
+        border-bottom: 3px solid #333;
+        margin: 0 0.1em;
+      }
+
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(10px, 3vw, 16px);
+        width: 100%;
+        max-width: 480px;
+      }
+
+      .btn {
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        color: #333;
+        background: var(--colour-option-btn);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 10px;
+        text-decoration: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        overflow: hidden;
+        -webkit-user-select: none;
+        user-select: none;
+        transition:
+          transform 0.1s ease,
+          background 0.15s ease;
+        font-size: clamp(1rem, 5vw, 1.5rem);
+        min-height: clamp(52px, 9vh, 76px);
+        padding: 0.3em 0.8em;
+        text-align: center;
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+
+      .btn.correct {
+        background: var(--colour-correct);
+        color: white;
+      }
+
+      .btn.wrong {
+        background: var(--colour-wrong);
+        color: white;
+      }
+
+      .btn.dim {
+        background: var(--colour-dim);
+        color: #999;
+      }
+
+      .btn:disabled {
+        cursor: default;
+      }
+
+      /* RESULTS SCREEN */
+      .results-wrapper {
+        display: none;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 0;
+        padding: 2vh 6vw 4vh;
+        overflow-y: auto;
+      }
+
+      .score {
+        color: white;
+        -webkit-text-stroke: 1.5px darkorange;
+        font-size: clamp(2rem, 10vw, 4rem);
+        text-align: center;
+        margin-bottom: 0.3em;
+      }
+
+      .score-sub {
+        color: white;
+        -webkit-text-stroke: 1px darkorange;
+        font-size: clamp(1rem, 5vw, 1.6rem);
+        text-align: center;
+        margin-bottom: 1em;
+      }
+
+      .mistakes-title {
+        color: white;
+        -webkit-text-stroke: 1px darkorange;
+        font-size: clamp(1.1rem, 5vw, 1.8rem);
+        text-align: center;
+        margin-bottom: 0.6em;
+      }
+
+      .mistakes-list {
+        list-style: none;
+        width: 100%;
+        max-width: 560px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 2em;
+      }
+
+      .mistakes-list li {
+        background: white;
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 12px;
+        padding: 0.7em 1em;
+        font-family: var(--font-chalk);
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3em;
+        font-size: clamp(0.9rem, 3.6vw, 1.15rem);
+      }
+
+      .mistakes-list .sentence {
+        font-weight: bold;
+      }
+
+      .mistakes-list .verdict {
+        color: var(--colour-correct);
+        font-weight: bold;
+      }
+      .mistakes-list .your-answer {
+        color: var(--colour-wrong);
+      }
+
+      .play-again {
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        color: #333;
+        background: var(--colour-btn-face);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 10px;
+        cursor: pointer;
+        padding: 0.7em 1.6em;
+        font-size: clamp(1.1rem, 5vw, 1.6rem);
+        transition: transform 0.1s ease;
+      }
+      .play-again:active {
+        transform: scale(0.97);
+        background: var(--colour-btn-active);
+      }
+
+      /* LANDSCAPE IPHONE - ask to rotate */
+      @media screen and (orientation: landscape) and (max-height: 450px) {
+        .rotate-message {
+          display: flex;
+        }
+        h1,
+        .progress,
+        .start-wrapper,
+        .game-wrapper,
+        .results-wrapper,
+        .back-btn {
+          display: none;
+        }
+      }
+
+      /* PORTRAIT IPHONE tweaks */
+      @media screen and (orientation: portrait) and (max-width: 430px) {
+        h1 {
+          font-size: clamp(1.2rem, 8vw, 2.1rem) !important;
+          margin-top: max(50px, env(safe-area-inset-top, 50px)) !important;
+        }
+        .game-wrapper {
+          padding: 1vh 6vw 3vh;
+        }
+        .question-card {
+          margin-bottom: 2.5vh;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="rotate-message">
+      <p>🔄 Please rotate your device to portrait mode!</p>
+    </div>
+
+    <a class="back-btn" href="grammar2.html">← Back</a>
+    <h1>Missing Word</h1>
+    <div class="progress" id="progress" style="display: none">
+      Question 1 / 20
+    </div>
+
+    <div class="start-wrapper" id="startWrapper">
+      <div class="start-title">Missing Word Quiz</div>
+      <div class="start-sub">
+        Read each sentence. Choose the correct word to fill the blank.
+      </div>
+      <div class="start-buttons">
+        <button class="btn" data-count="10">10</button>
+        <button class="btn" data-count="20">20</button>
+        <button class="btn" data-count="30">30</button>
+      </div>
+    </div>
+
+    <div class="game-wrapper" id="gameWrapper" style="display: none">
+      <div class="question-card">
+        <div class="question-label">Choose the correct word</div>
+        <div class="question-sentence" id="questionSentence"></div>
+      </div>
+      <div class="options" id="options"></div>
+    </div>
+
+    <div class="results-wrapper" id="resultsWrapper" style="display: none">
+      <div class="score" id="score"></div>
+      <div class="score-sub" id="scoreSub"></div>
+      <div class="mistakes-title" id="mistakesTitle" style="display: none">
+        Sentences to review
+      </div>
+      <ul class="mistakes-list" id="mistakesList"></ul>
+      <button class="play-again" id="playAgainBtn">Play Again</button>
+    </div>
+
+    <script>
+      // ---- Missing Word bank: 250 questions based on A2 Grammar List ----
+      const MISSING_WORD_BANK = [
+        // 1. Present perfect vs. past simple
+        {
+          text: "I ___ my phone somewhere yesterday.",
+          options: ["lose", "lost", "have lost"],
+          answer: "lost",
+        },
+        {
+          text: "She ___ to five different countries this year.",
+          options: ["went", "has been", "was"],
+          answer: "has been",
+        },
+        {
+          text: "We ___ that film already, so let's watch something else.",
+          options: ["saw", "have seen", "see"],
+          answer: "have seen",
+        },
+        {
+          text: "He ___ his job last month.",
+          options: ["has lost", "lost", "loses"],
+          answer: "lost",
+        },
+        {
+          text: "Have you ever ___ sushi?",
+          options: ["try", "tried", "have tried"],
+          answer: "tried",
+        },
+        {
+          text: "They ___ here since 2019.",
+          options: ["live", "lived", "have lived"],
+          answer: "have lived",
+        },
+        {
+          text: "He ___ the report yesterday afternoon.",
+          options: ["finishes", "finished", "has finished"],
+          answer: "finished",
+        },
+        {
+          text: "I ___ never eaten such a delicious meal.",
+          options: ["have", "has", "had"],
+          answer: "have",
+        },
+        {
+          text: "She ___ her degree in 2020.",
+          options: ["completed", "has completed", "completes"],
+          answer: "completed",
+        },
+        {
+          text: "We ___ this article twice already.",
+          options: ["read", "have read", "are reading"],
+          answer: "have read",
+        },
+
+        // 2. Present perfect continuous
+        {
+          text: "I ___ for two hours.",
+          options: ["study", "have been studying", "studied"],
+          answer: "have been studying",
+        },
+        {
+          text: "She ___ all morning.",
+          options: ["has been cooking", "cooked", "cooks"],
+          answer: "has been cooking",
+        },
+        {
+          text: "They ___ since seven o'clock.",
+          options: ["have been waiting", "waited", "wait"],
+          answer: "have been waiting",
+        },
+        {
+          text: "How long ___ you been learning English?",
+          options: ["have", "has", "did"],
+          answer: "have",
+        },
+        {
+          text: "He looks tired because he ___ all day.",
+          options: ["has been working", "worked", "works"],
+          answer: "has been working",
+        },
+        {
+          text: "We ___ about this problem for weeks.",
+          options: ["have been talking", "talked", "talk"],
+          answer: "have been talking",
+        },
+        {
+          text: "It ___ all week.",
+          options: ["has been raining", "rained", "rains"],
+          answer: "has been raining",
+        },
+        {
+          text: "I ___ to learn Spanish for six months.",
+          options: ["have been trying", "tried", "try"],
+          answer: "have been trying",
+        },
+        {
+          text: "She ___ her thesis since January.",
+          options: ["has been writing", "wrote", "writes"],
+          answer: "has been writing",
+        },
+        {
+          text: "They ___ for the bus for twenty minutes.",
+          options: ["have been waiting", "waited", "wait"],
+          answer: "have been waiting",
+        },
+
+        // 3. Past perfect simple
+        {
+          text: "By the time I arrived, the meeting ___ already started.",
+          options: ["has", "had", "was"],
+          answer: "had",
+        },
+        {
+          text: "She ___ finished her homework before dinner.",
+          options: ["has", "had", "was"],
+          answer: "had",
+        },
+        {
+          text: "We realised we ___ forgotten the tickets.",
+          options: ["have", "had", "were"],
+          answer: "had",
+        },
+        {
+          text: "He ___ left before I got there.",
+          options: ["has", "had", "was"],
+          answer: "had",
+        },
+        {
+          text: "I ___ never seen snow before that winter.",
+          options: ["have", "had", "was"],
+          answer: "had",
+        },
+        {
+          text: "They ___ eaten by the time we arrived.",
+          options: ["have", "had", "has"],
+          answer: "had",
+        },
+        {
+          text: "She told me she ___ studied French at school.",
+          options: ["has", "had", "was"],
+          answer: "had",
+        },
+        {
+          text: "By 2015, he ___ opened his own business.",
+          options: ["has", "had", "was"],
+          answer: "had",
+        },
+        {
+          text: "We ___ already left when it started to rain.",
+          options: ["have", "had", "are"],
+          answer: "had",
+        },
+        {
+          text: "I wondered why she ___ not called.",
+          options: ["has", "had", "was"],
+          answer: "had",
+        },
+
+        // 4. Second conditional
+        {
+          text: "If I ___ more money, I would travel more.",
+          options: ["have", "had", "will have"],
+          answer: "had",
+        },
+        {
+          text: "If she ___ here, she would help us.",
+          options: ["is", "was", "were"],
+          answer: "were",
+        },
+        {
+          text: "What would you do if you ___ the lottery?",
+          options: ["win", "won", "will win"],
+          answer: "won",
+        },
+        {
+          text: "If I were you, I ___ apologise.",
+          options: ["will", "would", "would have"],
+          answer: "would",
+        },
+        {
+          text: "We would go camping if the weather ___ better.",
+          options: ["is", "was", "were"],
+          answer: "were",
+        },
+        {
+          text: "If he ___ harder, he would pass the exam.",
+          options: ["studies", "studied", "will study"],
+          answer: "studied",
+        },
+        {
+          text: "She would call you if she ___ your number.",
+          options: ["knows", "knew", "will know"],
+          answer: "knew",
+        },
+        {
+          text: "If they ___ more time, they would finish the project.",
+          options: ["have", "had", "will have"],
+          answer: "had",
+        },
+        {
+          text: "I would buy that car if I ___ enough money.",
+          options: ["have", "had", "will have"],
+          answer: "had",
+        },
+        {
+          text: "If it ___ rain, we would cancel the picnic.",
+          options: ["rains", "rained", "will rain"],
+          answer: "rained",
+        },
+
+        // 5. Third conditional
+        {
+          text: "If I ___ harder, I would have passed the exam.",
+          options: ["study", "had studied", "studied"],
+          answer: "had studied",
+        },
+        {
+          text: "She wouldn't have missed the bus if she ___ up earlier.",
+          options: ["woke", "had woken", "wakes"],
+          answer: "had woken",
+        },
+        {
+          text: "If we ___ left earlier, we wouldn't have been late.",
+          options: ["had", "have", "has"],
+          answer: "had",
+        },
+        {
+          text: "He would have called you if he ___ your number.",
+          options: ["had", "has", "have"],
+          answer: "had",
+        },
+        {
+          text: "If they ___ the warning, the accident wouldn't have happened.",
+          options: ["had heeded", "heeded", "heed"],
+          answer: "had heeded",
+        },
+        {
+          text: "I wouldn't have said that if I ___ how you felt.",
+          options: ["know", "knew", "had known"],
+          answer: "had known",
+        },
+        {
+          text: "If she ___ harder, she would have got the job.",
+          options: ["tried", "had tried", "tries"],
+          answer: "had tried",
+        },
+        {
+          text: "We would have arrived on time if the train ___ delayed.",
+          options: ["wasn't", "hadn't been", "isn't"],
+          answer: "hadn't been",
+        },
+        {
+          text: "If he ___ the instructions, he wouldn't have made that mistake.",
+          options: ["followed", "had followed", "follows"],
+          answer: "had followed",
+        },
+        {
+          text: "She would have finished on time if she ___ so many breaks.",
+          options: ["didn't take", "hadn't taken", "doesn't take"],
+          answer: "hadn't taken",
+        },
+
+        // 6. Mixed conditionals
+        {
+          text: "If I ___ harder at school, I would have a better job now.",
+          options: ["studied", "had studied", "study"],
+          answer: "had studied",
+        },
+        {
+          text: "If she weren't so busy, she ___ to the party yesterday.",
+          options: ["would go", "would have gone", "went"],
+          answer: "would have gone",
+        },
+        {
+          text: "If he had taken the job, he ___ in London now.",
+          options: ["would live", "would have lived", "lives"],
+          answer: "would live",
+        },
+        {
+          text: "I wouldn't be so tired now if I ___ to bed earlier last night.",
+          options: ["went", "had gone", "go"],
+          answer: "had gone",
+        },
+        {
+          text: "If we hadn't missed the flight, we ___ at the hotel by now.",
+          options: ["would be", "would have been", "are"],
+          answer: "would be",
+        },
+        {
+          text: "She would be a doctor now if she ___ medicine at university.",
+          options: ["studied", "had studied", "studies"],
+          answer: "had studied",
+        },
+        {
+          text: "If you weren't so stubborn, you ___ his advice last week.",
+          options: ["would take", "would have taken", "take"],
+          answer: "would have taken",
+        },
+        {
+          text: "He wouldn't be so fit now if he ___ exercising years ago.",
+          options: ["didn't start", "hadn't started", "doesn't start"],
+          answer: "hadn't started",
+        },
+        {
+          text: "If I hadn't lost my passport, I ___ on holiday right now.",
+          options: ["would be", "would have been", "am"],
+          answer: "would be",
+        },
+        {
+          text: "We would know the answer now if we ___ to the lecture yesterday.",
+          options: ["went", "had gone", "go"],
+          answer: "had gone",
+        },
+
+        // 7. Passive voice
+        {
+          text: "The bridge ___ in 1932.",
+          options: ["built", "was built", "has built"],
+          answer: "was built",
+        },
+        {
+          text: "This report ___ by tomorrow.",
+          options: ["will finish", "will be finished", "finishes"],
+          answer: "will be finished",
+        },
+        {
+          text: "The results ___ next week.",
+          options: ["will announce", "will be announced", "announce"],
+          answer: "will be announced",
+        },
+        {
+          text: "Millions of copies of the book ___ every year.",
+          options: ["sell", "are sold", "sold"],
+          answer: "are sold",
+        },
+        {
+          text: "The window ___ during the storm.",
+          options: ["broke", "was broken", "breaks"],
+          answer: "was broken",
+        },
+        {
+          text: "The new policy ___ by the government last month.",
+          options: ["introduced", "was introduced", "introduces"],
+          answer: "was introduced",
+        },
+        {
+          text: "This medicine should ___ with food.",
+          options: ["take", "be taken", "taken"],
+          answer: "be taken",
+        },
+        {
+          text: "The letter ___ yet.",
+          options: ["hasn't sent", "hasn't been sent", "doesn't send"],
+          answer: "hasn't been sent",
+        },
+        {
+          text: "The house ___ at the moment.",
+          options: ["is renovating", "is being renovated", "renovates"],
+          answer: "is being renovated",
+        },
+        {
+          text: "The project ___ by the end of the year.",
+          options: ["will complete", "will have been completed", "completes"],
+          answer: "will have been completed",
+        },
+
+        // 8. Reported speech (statements)
+        {
+          text: "She said she ___ tired.",
+          options: ["is", "was", "has been"],
+          answer: "was",
+        },
+        {
+          text: "He told me he ___ finish the report by Friday.",
+          options: ["will", "would", "is going to"],
+          answer: "would",
+        },
+        {
+          text: "They said they ___ seen the film before.",
+          options: ["have", "had", "has"],
+          answer: "had",
+        },
+        {
+          text: "She mentioned that she ___ to Italy the following year.",
+          options: ["travels", "was travelling", "travelled"],
+          answer: "was travelling",
+        },
+        {
+          text: "He said he ___ my email.",
+          options: ["hasn't received", "hadn't received", "doesn't receive"],
+          answer: "hadn't received",
+        },
+        {
+          text: "She told me she ___ working there since 2018.",
+          options: ["has been", "had been", "was"],
+          answer: "had been",
+        },
+        {
+          text: "He said he ___ come to the party the next day.",
+          options: ["will", "would", "can"],
+          answer: "would",
+        },
+        {
+          text: "They said they ___ already left.",
+          options: ["have", "had", "has"],
+          answer: "had",
+        },
+        {
+          text: "She said she ___ like the plan.",
+          options: ["doesn't", "didn't", "isn't"],
+          answer: "didn't",
+        },
+        {
+          text: "He told us he ___ be able to attend.",
+          options: ["won't", "wouldn't", "doesn't"],
+          answer: "wouldn't",
+        },
+
+        // 9. Reported speech (questions)
+        {
+          text: "She asked me ___ I was coming to the party.",
+          options: ["that", "if", "what"],
+          answer: "if",
+        },
+        {
+          text: "He wanted to know ___ the meeting started.",
+          options: ["what time", "what time did", "that"],
+          answer: "what time",
+        },
+        {
+          text: "She asked me ___ I lived.",
+          options: ["where", "that", "if"],
+          answer: "where",
+        },
+        {
+          text: "They asked if I ___ finished the report.",
+          options: ["have", "had", "has"],
+          answer: "had",
+        },
+        {
+          text: "He asked me ___ I could help him.",
+          options: ["if", "that", "what"],
+          answer: "if",
+        },
+        {
+          text: "She wondered ___ he had arrived yet.",
+          options: ["that", "whether", "what"],
+          answer: "whether",
+        },
+        {
+          text: "He asked her ___ she was doing.",
+          options: ["what", "that", "if"],
+          answer: "what",
+        },
+        {
+          text: "They asked us ___ we would be free the next day.",
+          options: ["if", "that", "when"],
+          answer: "if",
+        },
+        {
+          text: "She asked me ___ I had ever been abroad.",
+          options: ["that", "if", "what"],
+          answer: "if",
+        },
+        {
+          text: "He asked what time the train ___.",
+          options: ["leaves", "left", "would leave"],
+          answer: "left",
+        },
+
+        // 10. Modals of deduction (present)
+        {
+          text: "He ___ be at home; his car isn't outside.",
+          options: ["can't", "must", "might"],
+          answer: "can't",
+        },
+        {
+          text: "She ___ be busy; she hasn't replied all day.",
+          options: ["must", "mustn't", "can't"],
+          answer: "must",
+        },
+        {
+          text: "They ___ be on holiday; I saw them at work yesterday.",
+          options: ["can't", "must", "might"],
+          answer: "can't",
+        },
+        {
+          text: "It ___ be him; he's on holiday this week.",
+          options: ["must", "can't", "might"],
+          answer: "can't",
+        },
+        {
+          text: "She's not answering, so she ___ be asleep.",
+          options: ["must", "can't", "mustn't"],
+          answer: "must",
+        },
+        {
+          text: "He ___ be lost; he knows this city well.",
+          options: ["can't", "must", "might"],
+          answer: "can't",
+        },
+        {
+          text: "This ___ be the wrong address; nobody's answering.",
+          options: ["must", "might", "can't"],
+          answer: "might",
+        },
+        {
+          text: "You ___ be joking; that's impossible.",
+          options: ["must", "can't", "might"],
+          answer: "must",
+        },
+        {
+          text: "She ___ know the answer; she studied this topic.",
+          options: ["might", "must", "can't"],
+          answer: "might",
+        },
+        {
+          text: "They ___ be at the station by now.",
+          options: ["must", "can't", "might"],
+          answer: "might",
+        },
+
+        // 11. Modals of past deduction
+        {
+          text: "He ___ have forgotten; he never misses appointments.",
+          options: ["can't", "must", "might"],
+          answer: "can't",
+        },
+        {
+          text: "She ___ have left already; her coat's gone.",
+          options: ["must", "can't", "might"],
+          answer: "must",
+        },
+        {
+          text: "They ___ have missed the train; it left ten minutes early.",
+          options: ["might", "must", "can't"],
+          answer: "might",
+        },
+        {
+          text: "He ___ have seen the message; he replied immediately.",
+          options: ["must", "can't", "might"],
+          answer: "must",
+        },
+        {
+          text: "She ___ have known about the change; nobody told her.",
+          options: ["can't", "must", "might"],
+          answer: "can't",
+        },
+        {
+          text: "They ___ have arrived by now; the flight landed hours ago.",
+          options: ["must", "might", "can't"],
+          answer: "must",
+        },
+        {
+          text: "He ___ have taken the wrong bus.",
+          options: ["might", "must", "can't"],
+          answer: "might",
+        },
+        {
+          text: "She ___ have heard you; she was wearing headphones.",
+          options: ["must", "can't", "might"],
+          answer: "can't",
+        },
+        {
+          text: "They ___ have forgotten the meeting.",
+          options: ["might", "must", "can't"],
+          answer: "might",
+        },
+        {
+          text: "He ___ have studied hard; he got a perfect score.",
+          options: ["must", "can't", "might"],
+          answer: "must",
+        },
+
+        // 12. Relative clauses
+        {
+          text: "The woman ___ lives next door is a doctor.",
+          options: ["who", "which", "whose"],
+          answer: "who",
+        },
+        {
+          text: "This is the book ___ I told you about.",
+          options: ["who", "which", "whose"],
+          answer: "which",
+        },
+        {
+          text: "That's the man ___ car was stolen.",
+          options: ["who", "which", "whose"],
+          answer: "whose",
+        },
+        {
+          text: "The city ___ we visited last year was beautiful.",
+          options: ["who", "which", "whose"],
+          answer: "which",
+        },
+        {
+          text: "She's the teacher ___ helped me with my project.",
+          options: ["who", "which", "whose"],
+          answer: "who",
+        },
+        {
+          text: "This is the house ___ I grew up.",
+          options: ["where", "which", "who"],
+          answer: "where",
+        },
+        {
+          text: "I remember the day ___ we first met.",
+          options: ["when", "where", "which"],
+          answer: "when",
+        },
+        {
+          text: "The reason ___ he left is still unclear.",
+          options: ["why", "where", "which"],
+          answer: "why",
+        },
+        {
+          text: "My brother, ___ works in finance, is visiting this weekend.",
+          options: ["who", "which", "whose"],
+          answer: "who",
+        },
+        {
+          text: "The company, ___ profits have doubled, is expanding.",
+          options: ["who", "which", "whose"],
+          answer: "whose",
+        },
+
+        // 13. Gerunds vs. infinitives
+        {
+          text: "I enjoy ___ new places.",
+          options: ["visit", "to visit", "visiting"],
+          answer: "visiting",
+        },
+        {
+          text: "She decided ___ the job.",
+          options: ["accept", "to accept", "accepting"],
+          answer: "to accept",
+        },
+        {
+          text: "He avoids ___ junk food.",
+          options: ["eat", "to eat", "eating"],
+          answer: "eating",
+        },
+        {
+          text: "They agreed ___ the plan.",
+          options: ["discuss", "to discuss", "discussing"],
+          answer: "to discuss",
+        },
+        {
+          text: "I don't mind ___ early.",
+          options: ["wake up", "to wake up", "waking up"],
+          answer: "waking up",
+        },
+        {
+          text: "She refused ___ the offer.",
+          options: ["accept", "to accept", "accepting"],
+          answer: "to accept",
+        },
+        {
+          text: "We look forward to ___ from you.",
+          options: ["hear", "to hear", "hearing"],
+          answer: "hearing",
+        },
+        {
+          text: "He suggested ___ a different approach.",
+          options: ["try", "to try", "trying"],
+          answer: "trying",
+        },
+        {
+          text: "I want ___ a new language this year.",
+          options: ["learn", "to learn", "learning"],
+          answer: "to learn",
+        },
+        {
+          text: "She finished ___ the report before lunch.",
+          options: ["write", "to write", "writing"],
+          answer: "writing",
+        },
+
+        // 14. Causative (have/get something done)
+        {
+          text: "I need to have my car ___.",
+          options: ["repair", "repaired", "repairing"],
+          answer: "repaired",
+        },
+        {
+          text: "She had her hair ___ yesterday.",
+          options: ["cut", "cutting", "to cut"],
+          answer: "cut",
+        },
+        {
+          text: "We're getting the house ___ next month.",
+          options: ["paint", "painted", "painting"],
+          answer: "painted",
+        },
+        {
+          text: "He had his laptop ___ last week.",
+          options: ["fix", "fixed", "fixing"],
+          answer: "fixed",
+        },
+        {
+          text: "They're having a new kitchen ___.",
+          options: ["install", "installed", "installing"],
+          answer: "installed",
+        },
+        {
+          text: "I got my phone screen ___ yesterday.",
+          options: ["replace", "replaced", "replacing"],
+          answer: "replaced",
+        },
+        {
+          text: "She's having her portrait ___ by a famous artist.",
+          options: ["paint", "painted", "painting"],
+          answer: "painted",
+        },
+        {
+          text: "We had the roof ___ before winter.",
+          options: ["repair", "repaired", "repairing"],
+          answer: "repaired",
+        },
+        {
+          text: "He's getting his suit ___ for the wedding.",
+          options: ["alter", "altered", "altering"],
+          answer: "altered",
+        },
+        {
+          text: "I had my teeth ___ last week.",
+          options: ["check", "checked", "checking"],
+          answer: "checked",
+        },
+
+        // 15. Used to / would (past habits)
+        {
+          text: "When I was young, I ___ play outside every day.",
+          options: ["use to", "used to", "would used"],
+          answer: "used to",
+        },
+        {
+          text: "She ___ live in Osaka, but she moved last year.",
+          options: ["use to", "used to", "would"],
+          answer: "used to",
+        },
+        {
+          text: "Every summer, we ___ visit our grandparents.",
+          options: ["use to", "used to", "would"],
+          answer: "would",
+        },
+        {
+          text: "He didn't ___ like coffee, but now he loves it.",
+          options: ["use to", "used to", "would"],
+          answer: "use to",
+        },
+        {
+          text: "___ you used to play sports as a child?",
+          options: ["Did", "Do", "Were"],
+          answer: "Did",
+        },
+        {
+          text: "They ___ walk to school together when they were kids.",
+          options: ["use to", "used to", "would"],
+          answer: "would",
+        },
+        {
+          text: "I ___ to be afraid of the dark.",
+          options: ["use", "used", "would"],
+          answer: "used",
+        },
+        {
+          text: "She never ___ eat vegetables as a child.",
+          options: ["use to", "used to", "would"],
+          answer: "used to",
+        },
+        {
+          text: "We ___ spend hours talking after school.",
+          options: ["use to", "used to", "would"],
+          answer: "would",
+        },
+        {
+          text: "___ your family used to travel a lot?",
+          options: ["Did", "Do", "Were"],
+          answer: "Did",
+        },
+
+        // 16. Wish / if only
+        {
+          text: "I wish I ___ more time to finish this.",
+          options: ["have", "had", "will have"],
+          answer: "had",
+        },
+        {
+          text: "She wishes she ___ harder for the exam.",
+          options: ["studied", "had studied", "studies"],
+          answer: "had studied",
+        },
+        {
+          text: "If only I ___ his name.",
+          options: ["remember", "remembered", "had remembered"],
+          answer: "remembered",
+        },
+        {
+          text: "I wish it ___ stop raining.",
+          options: ["will", "would", "could"],
+          answer: "would",
+        },
+        {
+          text: "He wishes he ___ so busy these days.",
+          options: ["isn't", "weren't", "wasn't"],
+          answer: "weren't",
+        },
+        {
+          text: "If only we ___ left earlier.",
+          options: ["have", "had", "has"],
+          answer: "had",
+        },
+        {
+          text: "I wish I ___ speak French fluently.",
+          options: ["can", "could", "will"],
+          answer: "could",
+        },
+        {
+          text: "She wishes she ___ told him the truth.",
+          options: ["has", "had", "have"],
+          answer: "had",
+        },
+        {
+          text: "If only he ___ listen to advice sometimes.",
+          options: ["would", "will", "could"],
+          answer: "would",
+        },
+        {
+          text: "I wish you ___ so loudly.",
+          options: ["don't talk", "wouldn't talk", "won't talk"],
+          answer: "wouldn't talk",
+        },
+
+        // 17. Comparative structures
+        {
+          text: "The more you practise, ___ you become.",
+          options: ["the better", "better", "the best"],
+          answer: "the better",
+        },
+        {
+          text: "This exam is ___ difficult than the last one.",
+          options: ["far more", "more far", "most"],
+          answer: "far more",
+        },
+        {
+          text: "She is by ___ the most talented singer in the group.",
+          options: ["far", "much", "more"],
+          answer: "far",
+        },
+        {
+          text: "The weather is getting ___ and colder.",
+          options: ["colder", "more cold", "more colder"],
+          answer: "colder",
+        },
+        {
+          text: "This is ___ the best restaurant in town.",
+          options: ["far", "easily", "more"],
+          answer: "easily",
+        },
+        {
+          text: "His new film is nowhere near ___ as his last one.",
+          options: ["as good", "better", "best"],
+          answer: "as good",
+        },
+        {
+          text: "The sooner we start, ___ we'll finish.",
+          options: ["the sooner", "sooner", "the soonest"],
+          answer: "the sooner",
+        },
+        {
+          text: "This project is much ___ complicated than we expected.",
+          options: ["more", "most", "much more"],
+          answer: "more",
+        },
+        {
+          text: "She runs ___ faster than everyone else on the team.",
+          options: ["much", "more", "very"],
+          answer: "much",
+        },
+        {
+          text: "The higher we climbed, ___ the air became.",
+          options: ["the thinner", "thinner", "thinnest"],
+          answer: "the thinner",
+        },
+
+        // 18. Linking words (although, despite, in spite of, however)
+        {
+          text: "___ the rain, we decided to go for a walk.",
+          options: ["Although", "Despite", "Because"],
+          answer: "Despite",
+        },
+        {
+          text: "___ he was tired, he kept working.",
+          options: ["Despite", "Although", "In spite of"],
+          answer: "Although",
+        },
+        {
+          text: "She passed the exam ___ having little time to study.",
+          options: ["although", "despite", "because"],
+          answer: "despite",
+        },
+        {
+          text: "He is very shy. ___, he gave an excellent speech.",
+          options: ["However", "Despite", "Although"],
+          answer: "However",
+        },
+        {
+          text: "___ of the difficulties, the team finished the project on time.",
+          options: ["In spite", "Despite", "Although"],
+          answer: "In spite",
+        },
+        {
+          text: "___ she studied hard, she failed the test.",
+          options: ["Despite", "Although", "In spite of"],
+          answer: "Although",
+        },
+        {
+          text: "He continued driving ___ the heavy traffic.",
+          options: ["although", "despite", "because"],
+          answer: "despite",
+        },
+        {
+          text: "The trip was expensive. ___, it was worth it.",
+          options: ["However", "Although", "Despite"],
+          answer: "However",
+        },
+        {
+          text: "___ being exhausted, she finished the marathon.",
+          options: ["Despite", "Although", "Because"],
+          answer: "Despite",
+        },
+        {
+          text: "___ the price, many people still buy the product.",
+          options: ["Despite", "Although", "Because"],
+          answer: "Despite",
+        },
+
+        // 19. Question tags
+        {
+          text: "You've finished your homework, ___?",
+          options: ["haven't you", "have you", "don't you"],
+          answer: "haven't you",
+        },
+        {
+          text: "She isn't coming, ___?",
+          options: ["is she", "isn't she", "doesn't she"],
+          answer: "is she",
+        },
+        {
+          text: "They can swim well, ___?",
+          options: ["can't they", "can they", "don't they"],
+          answer: "can't they",
+        },
+        {
+          text: "He didn't call you, ___?",
+          options: ["did he", "didn't he", "does he"],
+          answer: "did he",
+        },
+        {
+          text: "Let's go to the cinema, ___?",
+          options: ["shall we", "will we", "don't we"],
+          answer: "shall we",
+        },
+        {
+          text: "You wouldn't mind helping me, ___?",
+          options: ["would you", "wouldn't you", "do you"],
+          answer: "would you",
+        },
+        {
+          text: "She's never been to Spain, ___?",
+          options: ["has she", "hasn't she", "does she"],
+          answer: "has she",
+        },
+        {
+          text: "There isn't any milk left, ___?",
+          options: ["is there", "isn't there", "does it"],
+          answer: "is there",
+        },
+        {
+          text: "He'll be here soon, ___?",
+          options: ["won't he", "will he", "doesn't he"],
+          answer: "won't he",
+        },
+        {
+          text: "Nothing went wrong, ___?",
+          options: ["did it", "didn't it", "does it"],
+          answer: "did it",
+        },
+
+        // 20. So / such
+        {
+          text: "It was ___ a difficult exam that many students failed.",
+          options: ["so", "such", "very"],
+          answer: "such",
+        },
+        {
+          text: "She was ___ tired that she fell asleep instantly.",
+          options: ["so", "such", "very"],
+          answer: "so",
+        },
+        {
+          text: "It was ___ beautiful weather that we went to the beach.",
+          options: ["so", "such", "very"],
+          answer: "such",
+        },
+        {
+          text: "He speaks ___ quickly that I can't understand him.",
+          options: ["so", "such", "very"],
+          answer: "so",
+        },
+        {
+          text: "They are ___ kind people that everyone loves them.",
+          options: ["so", "such", "very"],
+          answer: "such",
+        },
+        {
+          text: "It was ___ cold that the lake froze.",
+          options: ["so", "such", "very"],
+          answer: "so",
+        },
+        {
+          text: "She has ___ many friends that her house is always full.",
+          options: ["so", "such", "very"],
+          answer: "so",
+        },
+        {
+          text: "It was ___ an interesting film that I watched it twice.",
+          options: ["so", "such", "very"],
+          answer: "such",
+        },
+        {
+          text: "The traffic was ___ heavy that we missed the train.",
+          options: ["so", "such", "very"],
+          answer: "so",
+        },
+        {
+          text: "It was ___ a shame that we missed the concert.",
+          options: ["so", "such", "very"],
+          answer: "such",
+        },
+
+        // 21. Phrasal verbs
+        {
+          text: "I need to ___ this problem before the deadline.",
+          options: ["look into", "look after", "look up"],
+          answer: "look into",
+        },
+        {
+          text: "She had to ___ her plans because of the weather.",
+          options: ["call off", "call on", "call up"],
+          answer: "call off",
+        },
+        {
+          text: "He finally ___ smoking last year.",
+          options: ["gave up", "gave in", "gave out"],
+          answer: "gave up",
+        },
+        {
+          text: "Could you ___ the lights before you leave?",
+          options: ["turn off", "turn up", "turn into"],
+          answer: "turn off",
+        },
+        {
+          text: "They ___ the meeting until next week.",
+          options: ["put off", "put up", "put on"],
+          answer: "put off",
+        },
+        {
+          text: "I couldn't ___ the noise from the construction site.",
+          options: ["put up with", "put up", "put on"],
+          answer: "put up with",
+        },
+        {
+          text: "She decided to ___ her old car for a new one.",
+          options: ["trade in", "trade off", "trade up"],
+          answer: "trade in",
+        },
+        {
+          text: "We need to ___ the plan carefully before starting.",
+          options: ["think through", "think of", "think up"],
+          answer: "think through",
+        },
+        {
+          text: "He ___ his own business after leaving university.",
+          options: ["set up", "set off", "set out"],
+          answer: "set up",
+        },
+        {
+          text: "I ___ my old friend at the airport by chance.",
+          options: ["ran into", "ran out", "ran off"],
+          answer: "ran into",
+        },
+
+        // 22. Unless / provided that / as long as
+        {
+          text: "You won't pass ___ you study harder.",
+          options: ["unless", "if", "provided"],
+          answer: "unless",
+        },
+        {
+          text: "I'll help you ___ you're honest with me.",
+          options: ["unless", "as long as", "if not"],
+          answer: "as long as",
+        },
+        {
+          text: "___ it rains, the match will go ahead.",
+          options: ["Unless", "Provided that", "As long as"],
+          answer: "Unless",
+        },
+        {
+          text: "You can borrow my car ___ you drive carefully.",
+          options: ["unless", "provided that", "if not"],
+          answer: "provided that",
+        },
+        {
+          text: "We'll go hiking ___ the weather is good.",
+          options: ["unless", "as long as", "if not"],
+          answer: "as long as",
+        },
+        {
+          text: "___ you apologise, she won't forgive you.",
+          options: ["Unless", "As long as", "Provided that"],
+          answer: "Unless",
+        },
+        {
+          text: "You may stay out late ___ you call me first.",
+          options: ["unless", "provided that", "if not"],
+          answer: "provided that",
+        },
+        {
+          text: "I won't sign the contract ___ the terms are changed.",
+          options: ["unless", "as long as", "provided that"],
+          answer: "unless",
+        },
+        {
+          text: "She'll take the job ___ the salary is good.",
+          options: ["unless", "as long as", "if not"],
+          answer: "as long as",
+        },
+        {
+          text: "___ you finish your work, you can't leave.",
+          options: ["Unless", "As long as", "Provided that"],
+          answer: "Unless",
+        },
+
+        // 23. Advanced articles
+        {
+          text: "___ information you gave me was very helpful.",
+          options: ["A", "An", "The"],
+          answer: "The",
+        },
+        {
+          text: "___ elderly need more support from society.",
+          options: ["A", "An", "The"],
+          answer: "The",
+        },
+        {
+          text: "He's studying to become ___ engineer.",
+          options: ["a", "an", "the"],
+          answer: "an",
+        },
+        {
+          text: "___ Amazon is the largest rainforest in the world.",
+          options: ["A", "An", "The"],
+          answer: "The",
+        },
+        {
+          text: "I'd like ___ apple, please.",
+          options: ["a", "an", "the"],
+          answer: "an",
+        },
+        {
+          text: "___ Philippines consists of over 7,000 islands.",
+          options: ["A", "An", "The"],
+          answer: "The",
+        },
+        {
+          text: "She has ___ unusual talent for languages.",
+          options: ["a", "an", "the"],
+          answer: "an",
+        },
+        {
+          text: "___ rich should help the poor, some argue.",
+          options: ["A", "An", "The"],
+          answer: "The",
+        },
+        {
+          text: "He plays ___ guitar in a local band.",
+          options: ["a", "an", "the"],
+          answer: "the",
+        },
+        {
+          text: "___ United States has a diverse population.",
+          options: ["A", "An", "The"],
+          answer: "The",
+        },
+
+        // 24. Participle clauses
+        {
+          text: "___ tired after the long journey, she went straight to bed.",
+          options: ["Feel", "Feeling", "Felt"],
+          answer: "Feeling",
+        },
+        {
+          text: "___ by the noise, the baby woke up crying.",
+          options: ["Startle", "Startling", "Startled"],
+          answer: "Startled",
+        },
+        {
+          text: "Not ___ what to say, he remained silent.",
+          options: ["know", "knowing", "known"],
+          answer: "knowing",
+        },
+        {
+          text: "___ his homework, he went out to play.",
+          options: ["Finish", "Finishing", "Finished"],
+          answer: "Finishing",
+        },
+        {
+          text: "___ from the top of the tower, the city looked amazing.",
+          options: ["See", "Seeing", "Seen"],
+          answer: "Seen",
+        },
+        {
+          text: "___ several times, the plan was finally approved.",
+          options: ["Revise", "Revising", "Revised"],
+          answer: "Revised",
+        },
+        {
+          text: "___ the instructions carefully, she assembled the shelf easily.",
+          options: ["Follow", "Following", "Followed"],
+          answer: "Following",
+        },
+        {
+          text: "___ with the results, the coach praised the team.",
+          options: ["Please", "Pleasing", "Pleased"],
+          answer: "Pleased",
+        },
+        {
+          text: "___ in a hurry, he forgot his umbrella.",
+          options: ["Leave", "Leaving", "Left"],
+          answer: "Leaving",
+        },
+        {
+          text: "___ by heavy traffic, we arrived late.",
+          options: ["Delay", "Delaying", "Delayed"],
+          answer: "Delayed",
+        },
+
+        // 25. Inversion (emphasis structures)
+        {
+          text: "___ had I arrived home when the phone rang.",
+          options: ["No sooner", "Not only", "Never"],
+          answer: "No sooner",
+        },
+        {
+          text: "___ have I seen such a beautiful sunset.",
+          options: ["Never", "No sooner", "Rarely"],
+          answer: "Never",
+        },
+        {
+          text: "___ did she realise how late it was.",
+          options: ["Only then", "Not only", "No sooner"],
+          answer: "Only then",
+        },
+        {
+          text: "___ was the film boring, but it was also too long.",
+          options: ["Not only", "Never", "Rarely"],
+          answer: "Not only",
+        },
+        {
+          text: "___ have I been so disappointed.",
+          options: ["Rarely", "No sooner", "Only then"],
+          answer: "Rarely",
+        },
+        {
+          text: "___ did we understand the seriousness of the situation.",
+          options: ["Only later", "Not only", "No sooner"],
+          answer: "Only later",
+        },
+        {
+          text: "___ under any circumstances should you share your password.",
+          options: ["Not", "Never", "No sooner"],
+          answer: "Never",
+        },
+        {
+          text: "___ he finished speaking than the audience began to applaud.",
+          options: ["No sooner had", "Not only had", "Never had"],
+          answer: "No sooner had",
+        },
+        {
+          text: "___ does she complain about her workload.",
+          options: ["Rarely", "Not only", "No sooner"],
+          answer: "Rarely",
+        },
+        {
+          text: "___ was the traffic bad, but the trains were also delayed.",
+          options: ["Not only", "Never", "Rarely"],
+          answer: "Not only",
+        },
+      ];
+      let questions = [];
+      let currentIndex = 0;
+      let score = 0;
+      let wrongAnswers = [];
+
+      const startWrapper = document.getElementById("startWrapper");
+      const gameWrapper = document.getElementById("gameWrapper");
+      const resultsWrapper = document.getElementById("resultsWrapper");
+      const questionSentenceEl = document.getElementById("questionSentence");
+      const optionsEl = document.getElementById("options");
+      const progressEl = document.getElementById("progress");
+      const scoreEl = document.getElementById("score");
+      const scoreSubEl = document.getElementById("scoreSub");
+      const mistakesTitleEl = document.getElementById("mistakesTitle");
+      const mistakesListEl = document.getElementById("mistakesList");
+      const playAgainBtn = document.getElementById("playAgainBtn");
+
+      function shuffle(array) {
+        const arr = array.slice();
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function startGame() {
+        questions = shuffle(MISSING_WORD_BANK).slice(0, QUESTIONS_PER_GAME);
+        currentIndex = 0;
+        score = 0;
+        wrongAnswers = [];
+        startWrapper.style.display = "none";
+        resultsWrapper.style.display = "none";
+        gameWrapper.style.display = "flex";
+        progressEl.style.display = "block";
+        renderQuestion();
+      }
+
+      function renderQuestion() {
+        const q = questions[currentIndex];
+        progressEl.textContent =
+          "Question " + (currentIndex + 1) + " / " + QUESTIONS_PER_GAME;
+
+        questionSentenceEl.innerHTML = q.text.replace(
+          "___",
+          '<span class="blank">&nbsp;</span>',
+        );
+
+        optionsEl.innerHTML = "";
+        const shuffledOptions = shuffle(q.options);
+        shuffledOptions.forEach((opt) => {
+          const btn = document.createElement("button");
+          btn.className = "btn";
+          btn.textContent = opt;
+          btn.addEventListener("click", () => handleAnswer(opt, btn));
+          optionsEl.appendChild(btn);
+        });
+      }
+
+      function handleAnswer(chosen, chosenBtn) {
+        const q = questions[currentIndex];
+        const allBtns = optionsEl.querySelectorAll(".btn");
+        allBtns.forEach((b) => (b.disabled = true));
+
+        const isCorrectAnswer = chosen === q.answer;
+
+        allBtns.forEach((b) => {
+          if (b.textContent === q.answer) {
+            b.classList.add("correct");
+          } else if (b === chosenBtn) {
+            b.classList.add("wrong");
+          } else {
+            b.classList.add("dim");
+          }
+        });
+
+        if (isCorrectAnswer) {
+          score++;
+        } else {
+          wrongAnswers.push({
+            text: q.text,
+            answer: q.answer,
+            chosen: chosen,
+          });
+        }
+
+        setTimeout(() => {
+          currentIndex++;
+          if (currentIndex < questions.length) {
+            renderQuestion();
+          } else {
+            showResults();
+          }
+        }, 900);
+      }
+
+      function showResults() {
+        gameWrapper.style.display = "none";
+        progressEl.style.display = "none";
+        resultsWrapper.style.display = "flex";
+
+        scoreEl.textContent = score + " / " + QUESTIONS_PER_GAME;
+        if (score === QUESTIONS_PER_GAME) {
+          scoreSubEl.textContent = "Perfect score! 🎉";
+        } else if (score >= QUESTIONS_PER_GAME * 0.7) {
+          scoreSubEl.textContent = "Great job!";
+        } else {
+          scoreSubEl.textContent = "Keep practising!";
+        }
+
+        mistakesListEl.innerHTML = "";
+        if (wrongAnswers.length > 0) {
+          mistakesTitleEl.style.display = "block";
+          wrongAnswers.forEach((w) => {
+            const li = document.createElement("li");
+            const sentSpan = document.createElement("span");
+            sentSpan.className = "sentence";
+            sentSpan.textContent = w.text.replace("___", "_____");
+            const yourSpan = document.createElement("span");
+            yourSpan.className = "your-answer";
+            yourSpan.textContent = "You chose: " + w.chosen;
+            const verdictSpan = document.createElement("span");
+            verdictSpan.className = "verdict";
+            verdictSpan.textContent = "Correct answer: " + w.answer;
+            li.appendChild(sentSpan);
+            li.appendChild(yourSpan);
+            li.appendChild(verdictSpan);
+            mistakesListEl.appendChild(li);
+          });
+        } else {
+          mistakesTitleEl.style.display = "none";
+        }
+      }
+
+      // start-screen buttons pick the question count and begin the game
+      document.querySelectorAll(".start-buttons .btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          QUESTIONS_PER_GAME = parseInt(btn.dataset.count, 10);
+          startGame();
+        });
+      });
+
+      // play again re-shows the start screen so a new count can be picked
+      playAgainBtn.addEventListener("click", () => {
+        resultsWrapper.style.display = "none";
+        startWrapper.style.display = "flex";
+      });
+    </script>
+  </body>
+</html>

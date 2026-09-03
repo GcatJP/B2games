@@ -1,0 +1,1230 @@
+<!doctype html>
+<!-- saved from url=(0056)file:///Users/graemecattermole/Downloads/verbquiz_2.html -->
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0,
+          maximum-scale=1.0, user-scalable=no"
+    />
+
+    <!-- iOS Home Screen behaviour -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Vocabulary Quiz" />
+
+    <title>Vocabulary Quiz</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      :root {
+        --font-chalk:
+          "Chalkboard SE", "Comic Sans MS", "Segoe Print", sans-serif;
+        --font-jp:
+          "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+        --colour-btn-face: navy;
+        --colour-btn-active: #1a1a70;
+        --colour-btn-border: #000000;
+        --colour-heading-text: orange;
+        --colour-correct: #4caf50;
+        --colour-wrong: #e53935;
+        --colour-dim: #f0f0f0;
+      }
+
+      .rotate-message {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: #0d1b33;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2em;
+      }
+      .rotate-message p {
+        color: var(--colour-heading-text);
+        -webkit-text-stroke: 0.8px darkorange;
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        font-size: clamp(1.2rem, 6vw, 2rem);
+        line-height: 1.4;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        max-width: 100vw;
+      }
+
+      body {
+        font-family: var(--font-chalk);
+        background-color: #1a2744;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow: hidden;
+        transition: background 0.3s ease;
+        color: orange;
+      }
+
+      h1 {
+        font-family: var(--font-chalk);
+        color: var(--colour-heading-text);
+        width: 100%;
+        text-align: center;
+        letter-spacing: 0.03em;
+        flex-shrink: 0;
+        -webkit-text-stroke: 1px yellow;
+        font-size: clamp(1.5rem, 8vw, 3.5rem);
+        padding: 0.4em 0.5em 0.2em;
+        margin-top: max(16px, env(safe-area-inset-top, 16px));
+      }
+
+      .back-btn {
+        position: fixed;
+        top: max(16px, env(safe-area-inset-top, 16px));
+        left: max(16px, env(safe-area-inset-left, 16px));
+        z-index: 60;
+        display: flex;
+        align-items: center;
+        gap: 0.3em;
+        background: var(--colour-btn-face);
+        color: var(--colour-heading-text);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 999px;
+        padding: 0.4em 0.9em;
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        font-size: 1rem;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.1s ease;
+      }
+      .back-btn:active {
+        transform: translateY(2px);
+        background: var(--colour-btn-active);
+      }
+
+      .progress {
+        color: white;
+        -webkit-text-stroke: 1px darkorange;
+        font-weight: bold;
+        font-size: clamp(0.9rem, 4vw, 1.3rem);
+        text-align: center;
+        margin-bottom: 0.5em;
+        flex-shrink: 0;
+      }
+
+      /* START SCREEN */
+      .start-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3vh;
+        width: 100%;
+        padding: 2vh 6vw;
+      }
+
+      .start-title {
+        color: white;
+        -webkit-text-stroke: 1px darkorange;
+        font-size: clamp(1.3rem, 6vw, 2rem);
+        text-align: center;
+      }
+
+      .start-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(14px, 4vw, 22px);
+        width: 100%;
+        max-width: 340px;
+      }
+
+      .game-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 0;
+        padding: 2vh 6vw 4vh;
+      }
+
+      .question-card {
+        background: white;
+        border: 3px solid var(--colour-btn-border);
+        border-radius: 20px;
+        padding: 0.8em 1em;
+        margin-bottom: 4vh;
+        text-align: center;
+        width: 100%;
+        max-width: 480px;
+      }
+      .question-jp {
+        font-size: clamp(2rem, 11vw, 4.5rem);
+        color: #333;
+        font-family: var(--font-chalk);
+        line-height: 1.3;
+      }
+
+      .answers {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(12px, 4vw, 24px);
+        width: 100%;
+        max-width: 480px;
+      }
+
+      .btn {
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        color: var(--colour-heading-text);
+        background: var(--colour-btn-face);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 10px;
+        text-decoration: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        overflow: hidden;
+        -webkit-user-select: none;
+        user-select: none;
+        transition:
+          transform 0.1s ease,
+          background 0.15s ease;
+        font-size: clamp(1.1rem, 6vw, 2rem);
+        height: clamp(60px, 12vh, 100px);
+        padding: 0 0.6em;
+      }
+      .answers .btn {
+        font-family: var(--font-jp);
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+
+      .btn.correct {
+        background: var(--colour-correct);
+        color: white;
+      }
+
+      .btn.wrong {
+        background: var(--colour-wrong);
+        color: white;
+      }
+
+      .btn.dim {
+        background: var(--colour-dim);
+        color: #999;
+      }
+
+      .btn:disabled {
+        cursor: default;
+      }
+
+      /* RESULTS SCREEN */
+      .results-wrapper {
+        display: none;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 0;
+        padding: 2vh 6vw 4vh;
+        overflow-y: auto;
+      }
+
+      .score {
+        color: white;
+        -webkit-text-stroke: 1.5px darkorange;
+        font-size: clamp(2rem, 10vw, 4rem);
+        text-align: center;
+        margin-bottom: 0.3em;
+      }
+
+      .score-sub {
+        color: white;
+        -webkit-text-stroke: 1px darkorange;
+        font-size: clamp(1rem, 5vw, 1.6rem);
+        text-align: center;
+        margin-bottom: 1em;
+      }
+
+      .mistakes-title {
+        color: white;
+        -webkit-text-stroke: 1px darkorange;
+        font-size: clamp(1.1rem, 5vw, 1.8rem);
+        text-align: center;
+        margin-bottom: 0.6em;
+      }
+
+      .mistakes-list {
+        list-style: none;
+        width: 100%;
+        max-width: 520px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 2em;
+      }
+
+      .mistakes-list li {
+        background: white;
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 12px;
+        padding: 0.6em 1em;
+        font-family: var(--font-chalk);
+        color: #333;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1em;
+        font-size: clamp(0.95rem, 4vw, 1.3rem);
+      }
+
+      .mistakes-list .jp {
+        font-weight: bold;
+        font-family: var(--font-jp);
+      }
+
+      .mistakes-list .en {
+        color: var(--colour-wrong);
+        font-weight: bold;
+        text-align: right;
+      }
+
+      .play-again {
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        color: #333;
+        background: var(--colour-btn-face);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 10px;
+        cursor: pointer;
+        padding: 0.7em 1.6em;
+        font-size: clamp(1.1rem, 5vw, 1.6rem);
+        transition: transform 0.1s ease;
+      }
+      .play-again:active {
+        transform: scale(0.97);
+        background: var(--colour-btn-active);
+      }
+
+      /* LANDSCAPE IPHONE - ask to rotate */
+      @media screen and (orientation: landscape) and (max-height: 450px) {
+        .rotate-message {
+          display: flex;
+        }
+        h1,
+        .progress,
+        .start-wrapper,
+        .game-wrapper,
+        .results-wrapper,
+        .back-btn {
+          display: none;
+        }
+      }
+
+      /* PORTRAIT IPHONE tweaks */
+      @media screen and (orientation: portrait) and (max-width: 430px) {
+        h1 {
+          font-size: clamp(1.3rem, 9vw, 2.4rem) !important;
+          margin-top: max(50px, env(safe-area-inset-top, 50px)) !important;
+        }
+        .game-wrapper {
+          padding: 1vh 6vw 3vh;
+        }
+        .question-card {
+          margin-bottom: 3vh;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="rotate-message">
+      <p>🔄 Please rotate your device to portrait mode!</p>
+    </div>
+
+    <a class="back-btn" href="vall2.html">← Back</a>
+    <h1>Vocabulary Quiz</h1>
+    <div class="progress" id="progress" style="display: none">
+      Question 1 / 20
+    </div>
+
+    <div class="start-wrapper" id="startWrapper">
+      <div class="start-title">How many questions?</div>
+      <div class="start-buttons">
+        <button class="btn" data-count="20">20</button>
+        <button class="btn" data-count="30">30</button>
+        <button class="btn" data-count="40">40</button>
+      </div>
+    </div>
+
+    <div class="game-wrapper" id="gameWrapper" style="display: none">
+      <div class="question-card">
+        <div class="question-jp" id="questionJp"></div>
+      </div>
+      <div class="answers" id="answers"></div>
+    </div>
+
+    <div class="results-wrapper" id="resultsWrapper" style="display: none">
+      <div class="score" id="score"></div>
+      <div class="score-sub" id="scoreSub"></div>
+      <div class="mistakes-title" id="mistakesTitle" style="display: none">
+        Words to review
+      </div>
+      <ul class="mistakes-list" id="mistakesList"></ul>
+      <button class="play-again" id="playAgainBtn">Play Again</button>
+    </div>
+
+    <script>
+      // ---- Noun bank: English noun + Japanese meaning ----
+      const VERB_BANK = [
+        { en: "achieve", jp: "達成する" },
+        { en: "acknowledge", jp: "認める" },
+        { en: "adapt", jp: "適応する" },
+        { en: "admit", jp: "認める" },
+        { en: "afford", jp: "余裕がある" },
+        { en: "aim", jp: "目指す" },
+        { en: "analyse", jp: "分析する" },
+        { en: "announce", jp: "発表する" },
+        { en: "apologise", jp: "謝罪する" },
+        { en: "appear", jp: "現れる" },
+        { en: "apply", jp: "応募する" },
+        { en: "approach", jp: "取り組む" },
+        { en: "approve", jp: "承認する" },
+        { en: "argue", jp: "議論する" },
+        { en: "arrange", jp: "手配する" },
+        { en: "assume", jp: "想定する" },
+        { en: "assure", jp: "保証する" },
+        { en: "attach", jp: "添付する" },
+        { en: "attempt", jp: "試みる" },
+        { en: "attend", jp: "出席する" },
+        { en: "attract", jp: "引きつける" },
+        { en: "avoid", jp: "避ける" },
+        { en: "base", jp: "基づかせる" },
+        { en: "behave", jp: "振る舞う" },
+        { en: "benefit", jp: "利益を得る" },
+        { en: "blame", jp: "非難する" },
+        { en: "bother", jp: "悩ませる" },
+        { en: "calculate", jp: "計算する" },
+        { en: "campaign", jp: "運動する" },
+        { en: "cause", jp: "引き起こす" },
+        { en: "challenge", jp: "異議を唱える" },
+        { en: "claim", jp: "主張する" },
+        { en: "combine", jp: "組み合わせる" },
+        { en: "commit", jp: "約束する" },
+        { en: "communicate", jp: "意思疎通する" },
+        { en: "compare", jp: "比較する" },
+        { en: "compete", jp: "競争する" },
+        { en: "complain", jp: "苦情を言う" },
+        { en: "concentrate", jp: "集中する" },
+        { en: "concern", jp: "関係する" },
+        { en: "conclude", jp: "結論づける" },
+        { en: "confirm", jp: "確認する" },
+        { en: "connect", jp: "つなげる" },
+        { en: "consider", jp: "考慮する" },
+        { en: "consist", jp: "構成される" },
+        { en: "contain", jp: "含む" },
+        { en: "continue", jp: "継続する" },
+        { en: "contribute", jp: "貢献する" },
+        { en: "convince", jp: "納得させる" },
+        { en: "cope", jp: "対処する" },
+        { en: "create", jp: "創造する" },
+        { en: "criticise", jp: "批判する" },
+        { en: "damage", jp: "損害を与える" },
+        { en: "deal", jp: "対処する" },
+        { en: "debate", jp: "討論する" },
+        { en: "declare", jp: "宣言する" },
+        { en: "define", jp: "定義する" },
+        { en: "delay", jp: "遅らせる" },
+        { en: "deliver", jp: "配達する" },
+        { en: "demand", jp: "要求する" },
+        { en: "deny", jp: "否定する" },
+        { en: "depend", jp: "頼る" },
+        { en: "describe", jp: "描写する" },
+        { en: "deserve", jp: "値する" },
+        { en: "design", jp: "設計する" },
+        { en: "determine", jp: "決定する" },
+        { en: "develop", jp: "発展させる" },
+        { en: "differ", jp: "異なる" },
+        { en: "disagree", jp: "意見が合わない" },
+        { en: "discover", jp: "発見する" },
+        { en: "discuss", jp: "議論する" },
+        { en: "distinguish", jp: "区別する" },
+        { en: "divide", jp: "分ける" },
+        { en: "doubt", jp: "疑う" },
+        { en: "encourage", jp: "励ます" },
+        { en: "engage", jp: "従事する" },
+        { en: "ensure", jp: "確実にする" },
+        { en: "establish", jp: "確立する" },
+        { en: "estimate", jp: "見積もる" },
+        { en: "examine", jp: "調べる" },
+        { en: "exceed", jp: "超える" },
+        { en: "exchange", jp: "交換する" },
+        { en: "exist", jp: "存在する" },
+        { en: "expand", jp: "拡大する" },
+        { en: "expect", jp: "期待する" },
+        { en: "experience", jp: "経験する" },
+        { en: "explain", jp: "説明する" },
+        { en: "expose", jp: "さらす" },
+        { en: "express", jp: "表現する" },
+        { en: "extend", jp: "延長する" },
+        { en: "face", jp: "直面する" },
+        { en: "fail", jp: "失敗する" },
+        { en: "focus", jp: "集中する" },
+        { en: "force", jp: "強制する" },
+        { en: "forgive", jp: "許す" },
+        { en: "found", jp: "設立する" },
+        { en: "gain", jp: "得る" },
+        { en: "guarantee", jp: "保証する" },
+        { en: "handle", jp: "扱う" },
+        { en: "identify", jp: "特定する" },
+        { en: "ignore", jp: "無視する" },
+        { en: "imagine", jp: "想像する" },
+        { en: "impress", jp: "感銘を与える" },
+        { en: "improve", jp: "改善する" },
+        { en: "include", jp: "含める" },
+        { en: "increase", jp: "増加する" },
+        { en: "indicate", jp: "示す" },
+        { en: "influence", jp: "影響を与える" },
+        { en: "inform", jp: "知らせる" },
+        { en: "insist", jp: "主張する" },
+        { en: "inspire", jp: "鼓舞する" },
+        { en: "install", jp: "設置する" },
+        { en: "intend", jp: "意図する" },
+        { en: "introduce", jp: "紹介する" },
+        { en: "investigate", jp: "調査する" },
+        { en: "involve", jp: "含む" },
+        { en: "justify", jp: "正当化する" },
+        { en: "lack", jp: "欠けている" },
+        { en: "lead", jp: "導く" },
+        { en: "limit", jp: "制限する" },
+        { en: "maintain", jp: "維持する" },
+        { en: "manage", jp: "管理する" },
+        { en: "manufacture", jp: "製造する" },
+        { en: "measure", jp: "測る" },
+        { en: "mention", jp: "言及する" },
+        { en: "motivate", jp: "動機づける" },
+        { en: "negotiate", jp: "交渉する" },
+        { en: "notice", jp: "気づく" },
+        { en: "obtain", jp: "手に入れる" },
+        { en: "occur", jp: "起こる" },
+        { en: "operate", jp: "操作する" },
+        { en: "organise", jp: "組織する" },
+        { en: "participate", jp: "参加する" },
+        { en: "perform", jp: "行う" },
+        { en: "persuade", jp: "説得する" },
+        { en: "predict", jp: "予測する" },
+        { en: "prefer", jp: "好む" },
+        { en: "prepare", jp: "準備する" },
+        { en: "present", jp: "提示する" },
+        { en: "prevent", jp: "防ぐ" },
+        { en: "produce", jp: "生産する" },
+        { en: "promise", jp: "約束する" },
+        { en: "promote", jp: "促進する" },
+        { en: "propose", jp: "提案する" },
+        { en: "protect", jp: "保護する" },
+        { en: "prove", jp: "証明する" },
+        { en: "provide", jp: "提供する" },
+        { en: "publish", jp: "出版する" },
+        { en: "pursue", jp: "追求する" },
+        { en: "react", jp: "反応する" },
+        { en: "realise", jp: "気づく" },
+        { en: "recall", jp: "思い出す" },
+        { en: "recognise", jp: "認識する" },
+        { en: "recommend", jp: "推薦する" },
+        { en: "reduce", jp: "減らす" },
+        { en: "refer", jp: "言及する" },
+        { en: "reflect", jp: "反映する" },
+        { en: "refuse", jp: "拒否する" },
+        { en: "regard", jp: "みなす" },
+        { en: "regret", jp: "後悔する" },
+        { en: "reject", jp: "拒絶する" },
+        { en: "relate", jp: "関連づける" },
+        { en: "release", jp: "解放する" },
+        { en: "rely", jp: "頼る" },
+        { en: "remain", jp: "残る" },
+        { en: "remove", jp: "取り除く" },
+        { en: "replace", jp: "取り替える" },
+        { en: "represent", jp: "代表する" },
+        { en: "require", jp: "必要とする" },
+        { en: "research", jp: "研究する" },
+        { en: "resolve", jp: "解決する" },
+        { en: "respond", jp: "応答する" },
+        { en: "reveal", jp: "明らかにする" },
+        { en: "risk", jp: "危険にさらす" },
+        { en: "satisfy", jp: "満足させる" },
+        { en: "seek", jp: "探し求める" },
+        { en: "select", jp: "選択する" },
+        { en: "separate", jp: "分離する" },
+        { en: "settle", jp: "解決する" },
+        { en: "shift", jp: "移す" },
+        { en: "solve", jp: "解決する" },
+        { en: "specialise", jp: "専門にする" },
+        { en: "state", jp: "述べる" },
+        { en: "struggle", jp: "苦闘する" },
+        { en: "succeed", jp: "成功する" },
+        { en: "suffer", jp: "苦しむ" },
+        { en: "supply", jp: "供給する" },
+        { en: "support", jp: "支援する" },
+        { en: "survive", jp: "生き残る" },
+        { en: "suspect", jp: "疑う" },
+        { en: "tend", jp: "傾向がある" },
+        { en: "threaten", jp: "脅す" },
+        { en: "trust", jp: "信頼する" },
+        { en: "warn", jp: "警告する" },
+      ];
+      const ADJ_BANK = [
+        { en: "accurate", jp: "正確な" },
+        { en: "adequate", jp: "十分な" },
+        { en: "aggressive", jp: "攻撃的な" },
+        { en: "ambitious", jp: "野心的な" },
+        { en: "ancient", jp: "古代の" },
+        { en: "anxious", jp: "不安な" },
+        { en: "appropriate", jp: "適切な" },
+        { en: "artificial", jp: "人工の" },
+        { en: "aware", jp: "気づいている" },
+        { en: "awkward", jp: "気まずい" },
+        { en: "brief", jp: "簡潔な" },
+        { en: "capable", jp: "有能な" },
+        { en: "cautious", jp: "慎重な" },
+        { en: "cheerful", jp: "陽気な" },
+        { en: "chemical", jp: "化学的な" },
+        { en: "civil", jp: "市民の" },
+        { en: "coherent", jp: "首尾一貫した" },
+        { en: "commercial", jp: "商業的な" },
+        { en: "compatible", jp: "互換性のある" },
+        { en: "competitive", jp: "競争力のある" },
+        { en: "complex", jp: "複雑な" },
+        { en: "complicated", jp: "複雑な" },
+        { en: "confident", jp: "自信のある" },
+        { en: "confused", jp: "混乱した" },
+        { en: "conscious", jp: "意識している" },
+        { en: "considerable", jp: "かなりの" },
+        { en: "consistent", jp: "一貫した" },
+        { en: "constant", jp: "絶え間ない" },
+        { en: "contemporary", jp: "現代の" },
+        { en: "controversial", jp: "物議を醸す" },
+        { en: "convenient", jp: "便利な" },
+        { en: "corporate", jp: "企業の" },
+        { en: "creative", jp: "創造的な" },
+        { en: "critical", jp: "批判的な" },
+        { en: "crucial", jp: "極めて重要な" },
+        { en: "curious", jp: "好奇心旺盛な" },
+        { en: "decent", jp: "きちんとした" },
+        { en: "delicate", jp: "繊細な" },
+        { en: "dependent", jp: "依存している" },
+        { en: "desperate", jp: "必死の" },
+        { en: "determined", jp: "決意した" },
+        { en: "disappointed", jp: "がっかりした" },
+        { en: "distinct", jp: "明確に異なる" },
+        { en: "diverse", jp: "多様な" },
+        { en: "domestic", jp: "国内の" },
+        { en: "dramatic", jp: "劇的な" },
+        { en: "economic", jp: "経済の" },
+        { en: "efficient", jp: "効率的な" },
+        { en: "elderly", jp: "年配の" },
+        { en: "embarrassed", jp: "恥ずかしい" },
+        { en: "emotional", jp: "感情的な" },
+        { en: "enormous", jp: "巨大な" },
+        { en: "environmental", jp: "環境の" },
+        { en: "equivalent", jp: "同等の" },
+        { en: "essential", jp: "不可欠な" },
+        { en: "ethical", jp: "倫理的な" },
+        { en: "eventual", jp: "最終的な" },
+        { en: "evident", jp: "明白な" },
+        { en: "exhausted", jp: "疲れ果てた" },
+        { en: "extensive", jp: "広範囲の" },
+        { en: "extreme", jp: "極端な" },
+        { en: "faithful", jp: "忠実な" },
+        { en: "familiar", jp: "よく知っている" },
+        { en: "financial", jp: "財政的な" },
+        { en: "flexible", jp: "柔軟な" },
+        { en: "fluent", jp: "流暢な" },
+        { en: "formal", jp: "正式な" },
+        { en: "frequent", jp: "頻繁な" },
+        { en: "fundamental", jp: "根本的な" },
+        { en: "generous", jp: "気前の良い" },
+        { en: "genuine", jp: "本物の" },
+        { en: "global", jp: "世界的な" },
+        { en: "gradual", jp: "徐々の" },
+        { en: "guilty", jp: "有罪の" },
+        { en: "harmful", jp: "有害な" },
+        { en: "historic", jp: "歴史上重要な" },
+        { en: "honest", jp: "正直な" },
+        { en: "hostile", jp: "敵意のある" },
+        { en: "identical", jp: "全く同じ" },
+        { en: "immediate", jp: "即座の" },
+        { en: "independent", jp: "独立した" },
+        { en: "individual", jp: "個々の" },
+        { en: "industrial", jp: "工業の" },
+        { en: "inevitable", jp: "避けられない" },
+        { en: "influential", jp: "影響力のある" },
+        { en: "initial", jp: "最初の" },
+        { en: "innocent", jp: "無罪の" },
+        { en: "intelligent", jp: "知的な" },
+        { en: "intense", jp: "激しい" },
+        { en: "internal", jp: "内部の" },
+        { en: "isolated", jp: "孤立した" },
+        { en: "jealous", jp: "嫉妬している" },
+        { en: "legal", jp: "合法の" },
+        { en: "legitimate", jp: "正当な" },
+        { en: "logical", jp: "論理的な" },
+        { en: "loyal", jp: "忠実な" },
+        { en: "massive", jp: "巨大な" },
+        { en: "mature", jp: "成熟した" },
+        { en: "mental", jp: "精神的な" },
+        { en: "minor", jp: "小さい" },
+        { en: "mutual", jp: "相互の" },
+        { en: "narrow", jp: "狭い" },
+        { en: "negative", jp: "否定的な" },
+        { en: "neutral", jp: "中立の" },
+        { en: "obvious", jp: "明白な" },
+        { en: "occasional", jp: "たまの" },
+        { en: "official", jp: "公式の" },
+        { en: "optimistic", jp: "楽観的な" },
+        { en: "ordinary", jp: "普通の" },
+        { en: "original", jp: "独創的な" },
+        { en: "outstanding", jp: "傑出した" },
+        { en: "overall", jp: "全体的な" },
+        { en: "particular", jp: "特定の" },
+        { en: "permanent", jp: "永久の" },
+        { en: "physical", jp: "身体的な" },
+        { en: "positive", jp: "肯定的な" },
+        { en: "practical", jp: "実用的な" },
+        { en: "precise", jp: "正確な" },
+        { en: "primary", jp: "主要な" },
+        { en: "private", jp: "私的な" },
+        { en: "profound", jp: "深遠な" },
+        { en: "proper", jp: "適切な" },
+        { en: "psychological", jp: "心理的な" },
+        { en: "punctual", jp: "時間厳守の" },
+        { en: "puzzled", jp: "困惑した" },
+        { en: "radical", jp: "根本的な" },
+        { en: "rare", jp: "まれな" },
+        { en: "rational", jp: "合理的な" },
+        { en: "realistic", jp: "現実的な" },
+        { en: "reasonable", jp: "合理的な" },
+        { en: "reliable", jp: "信頼できる" },
+        { en: "relevant", jp: "関連のある" },
+        { en: "reluctant", jp: "気が進まない" },
+        { en: "remarkable", jp: "注目すべき" },
+        { en: "responsible", jp: "責任がある" },
+        { en: "rigid", jp: "厳格な" },
+        { en: "rough", jp: "粗い" },
+        { en: "rural", jp: "田舎の" },
+        { en: "satisfied", jp: "満足した" },
+        { en: "secure", jp: "安全な" },
+        { en: "select", jp: "選び抜かれた" },
+        { en: "sensible", jp: "分別のある" },
+        { en: "sensitive", jp: "敏感な" },
+        { en: "severe", jp: "深刻な" },
+        { en: "significant", jp: "重要な" },
+        { en: "similar", jp: "似ている" },
+        { en: "sincere", jp: "誠実な" },
+        { en: "skilled", jp: "熟練した" },
+        { en: "sophisticated", jp: "洗練された" },
+        { en: "specific", jp: "特定の" },
+        { en: "spiritual", jp: "精神的な" },
+        { en: "stable", jp: "安定した" },
+        { en: "steady", jp: "着実な" },
+        { en: "strict", jp: "厳しい" },
+        { en: "stubborn", jp: "頑固な" },
+        { en: "subtle", jp: "微妙な" },
+        { en: "sufficient", jp: "十分な" },
+        { en: "superior", jp: "優れた" },
+        { en: "suspicious", jp: "疑わしい" },
+        { en: "temporary", jp: "一時的な" },
+        { en: "tense", jp: "緊張した" },
+        { en: "thorough", jp: "徹底的な" },
+        { en: "tough", jp: "厳しい" },
+        { en: "traditional", jp: "伝統的な" },
+        { en: "typical", jp: "典型的な" },
+        { en: "ultimate", jp: "究極の" },
+        { en: "unemployed", jp: "失業した" },
+        { en: "unique", jp: "独特な" },
+        { en: "urban", jp: "都会の" },
+        { en: "urgent", jp: "緊急の" },
+        { en: "valid", jp: "有効な" },
+        { en: "various", jp: "さまざまな" },
+        { en: "vast", jp: "広大な" },
+        { en: "vital", jp: "極めて重要な" },
+        { en: "vivid", jp: "鮮やかな" },
+        { en: "vulnerable", jp: "傷つきやすい" },
+        { en: "widespread", jp: "広範囲に及ぶ" },
+        { en: "willing", jp: "自ら進んでする" },
+      ];
+
+      const NOUN_BANK = [
+        { en: "achievement", jp: "業績" },
+        { en: "advantage", jp: "利点" },
+        { en: "agreement", jp: "合意" },
+        { en: "ambition", jp: "野心" },
+        { en: "ancestor", jp: "祖先" },
+        { en: "anxiety", jp: "不安" },
+        { en: "apology", jp: "謝罪" },
+        { en: "appearance", jp: "外見" },
+        { en: "application", jp: "応募" },
+        { en: "approach", jp: "取り組み方" },
+        { en: "argument", jp: "議論" },
+        { en: "assignment", jp: "課題" },
+        { en: "assistance", jp: "援助" },
+        { en: "assumption", jp: "推測" },
+        { en: "atmosphere", jp: "雰囲気" },
+        { en: "attempt", jp: "試み" },
+        { en: "attitude", jp: "態度" },
+        { en: "attraction", jp: "魅力" },
+        { en: "authority", jp: "権威" },
+        { en: "awareness", jp: "意識" },
+        { en: "background", jp: "背景" },
+        { en: "balance", jp: "バランス" },
+        { en: "barrier", jp: "障壁" },
+        { en: "behaviour", jp: "行動" },
+        { en: "belief", jp: "信念" },
+        { en: "benefit", jp: "利益" },
+        { en: "budget", jp: "予算" },
+        { en: "career", jp: "経歴" },
+        { en: "cause", jp: "原因" },
+        { en: "challenge", jp: "課題" },
+        { en: "charity", jp: "慈善団体" },
+        { en: "circumstance", jp: "状況" },
+        { en: "citizen", jp: "市民" },
+        { en: "climate", jp: "気候" },
+        { en: "commitment", jp: "決意" },
+        { en: "committee", jp: "委員会" },
+        { en: "communication", jp: "コミュニケーション" },
+        { en: "community", jp: "地域社会" },
+        { en: "comparison", jp: "比較" },
+        { en: "competition", jp: "競争" },
+        { en: "complaint", jp: "苦情" },
+        { en: "concentration", jp: "集中" },
+        { en: "concern", jp: "懸念" },
+        { en: "conclusion", jp: "結論" },
+        { en: "conflict", jp: "対立" },
+        { en: "connection", jp: "つながり" },
+        { en: "consequence", jp: "結果" },
+        { en: "consideration", jp: "考慮" },
+        { en: "consumer", jp: "消費者" },
+        { en: "contribution", jp: "貢献" },
+        { en: "controversy", jp: "論争" },
+        { en: "conversation", jp: "会話" },
+        { en: "cooperation", jp: "協力" },
+        { en: "corporation", jp: "企業" },
+        { en: "crisis", jp: "危機" },
+        { en: "criticism", jp: "批判" },
+        { en: "culture", jp: "文化" },
+        { en: "debate", jp: "討論" },
+        { en: "decade", jp: "十年間" },
+        { en: "decision", jp: "決定" },
+        { en: "delay", jp: "遅延" },
+        { en: "demand", jp: "需要" },
+        { en: "depression", jp: "不況" },
+        { en: "development", jp: "発展" },
+        { en: "device", jp: "装置" },
+        { en: "diet", jp: "食生活" },
+        { en: "disability", jp: "障害" },
+        { en: "disagreement", jp: "意見の相違" },
+        { en: "disaster", jp: "災害" },
+        { en: "discipline", jp: "規律" },
+        { en: "discovery", jp: "発見" },
+        { en: "discrimination", jp: "差別" },
+        { en: "distance", jp: "距離" },
+        { en: "diversity", jp: "多様性" },
+        { en: "economy", jp: "経済" },
+        { en: "education", jp: "教育" },
+        { en: "effect", jp: "影響" },
+        { en: "efficiency", jp: "効率" },
+        { en: "effort", jp: "努力" },
+        { en: "election", jp: "選挙" },
+        { en: "emergency", jp: "緊急事態" },
+        { en: "emotion", jp: "感情" },
+        { en: "employee", jp: "従業員" },
+        { en: "employer", jp: "雇用主" },
+        { en: "employment", jp: "雇用" },
+        { en: "energy", jp: "エネルギー" },
+        { en: "enthusiasm", jp: "熱意" },
+        { en: "environment", jp: "環境" },
+        { en: "equality", jp: "平等" },
+        { en: "equipment", jp: "設備" },
+        { en: "evidence", jp: "証拠" },
+        { en: "evolution", jp: "進化" },
+        { en: "existence", jp: "存在" },
+        { en: "expectation", jp: "期待" },
+        { en: "expense", jp: "出費" },
+        { en: "explanation", jp: "説明" },
+        { en: "exposure", jp: "さらされること" },
+        { en: "factor", jp: "要因" },
+        { en: "failure", jp: "失敗" },
+        { en: "fashion", jp: "流行" },
+        { en: "feature", jp: "特徴" },
+        { en: "flexibility", jp: "柔軟性" },
+        { en: "focus", jp: "焦点" },
+        { en: "foundation", jp: "基礎" },
+        { en: "freedom", jp: "自由" },
+        { en: "function", jp: "機能" },
+        { en: "generation", jp: "世代" },
+        { en: "goal", jp: "目標" },
+        { en: "government", jp: "政府" },
+        { en: "growth", jp: "成長" },
+        { en: "habit", jp: "習慣" },
+        { en: "harm", jp: "害" },
+        { en: "identity", jp: "アイデンティティ" },
+        { en: "illness", jp: "病気" },
+        { en: "image", jp: "イメージ" },
+        { en: "impact", jp: "影響" },
+        { en: "improvement", jp: "改善" },
+        { en: "income", jp: "収入" },
+        { en: "independence", jp: "独立" },
+        { en: "industry", jp: "産業" },
+        { en: "influence", jp: "影響力" },
+        { en: "injury", jp: "けが" },
+        { en: "innovation", jp: "革新" },
+        { en: "instinct", jp: "本能" },
+        { en: "institution", jp: "機関" },
+        { en: "instruction", jp: "指示" },
+        { en: "insurance", jp: "保険" },
+        { en: "intelligence", jp: "知能" },
+        { en: "interview", jp: "面接" },
+        { en: "investment", jp: "投資" },
+        { en: "issue", jp: "問題" },
+        { en: "justice", jp: "正義" },
+        { en: "knowledge", jp: "知識" },
+        { en: "labour", jp: "労働" },
+        { en: "landscape", jp: "風景" },
+        { en: "law", jp: "法律" },
+        { en: "leadership", jp: "指導力" },
+        { en: "lifestyle", jp: "生活様式" },
+        { en: "limit", jp: "限界" },
+        { en: "logic", jp: "論理" },
+        { en: "loyalty", jp: "忠誠" },
+        { en: "majority", jp: "大多数" },
+        { en: "management", jp: "経営" },
+        { en: "manufacturer", jp: "製造業者" },
+        { en: "material", jp: "材料" },
+        { en: "media", jp: "メディア" },
+        { en: "membership", jp: "会員資格" },
+        { en: "memory", jp: "記憶" },
+        { en: "method", jp: "方法" },
+        { en: "minority", jp: "少数派" },
+        { en: "mood", jp: "気分" },
+        { en: "movement", jp: "運動" },
+        { en: "nation", jp: "国家" },
+        { en: "necessity", jp: "必要性" },
+        { en: "neighbour", jp: "隣人" },
+        { en: "objective", jp: "目的" },
+        { en: "obligation", jp: "義務" },
+        { en: "occasion", jp: "機会" },
+        { en: "opinion", jp: "意見" },
+        { en: "opponent", jp: "敵" },
+        { en: "opportunity", jp: "機会" },
+        { en: "organisation", jp: "組織" },
+        { en: "origin", jp: "起源" },
+        { en: "outcome", jp: "結果" },
+        { en: "participant", jp: "参加者" },
+        { en: "partnership", jp: "提携" },
+        { en: "passion", jp: "情熱" },
+        { en: "patience", jp: "忍耐" },
+        { en: "percentage", jp: "割合" },
+        { en: "performance", jp: "成果" },
+        { en: "period", jp: "期間" },
+        { en: "personality", jp: "性格" },
+        { en: "perspective", jp: "視点" },
+        { en: "phenomenon", jp: "現象" },
+        { en: "philosophy", jp: "哲学" },
+        { en: "planet", jp: "惑星" },
+        { en: "policy", jp: "政策" },
+        { en: "pollution", jp: "汚染" },
+        { en: "population", jp: "人口" },
+        { en: "poverty", jp: "貧困" },
+        { en: "prediction", jp: "予測" },
+        { en: "preference", jp: "好み" },
+        { en: "pressure", jp: "圧力" },
+        { en: "priority", jp: "優先事項" },
+        { en: "procedure", jp: "手順" },
+        { en: "process", jp: "過程" },
+        { en: "production", jp: "生産" },
+        { en: "professional", jp: "専門家" },
+        { en: "profit", jp: "利益" },
+        { en: "progress", jp: "進歩" },
+        { en: "project", jp: "計画" },
+        { en: "promotion", jp: "昇進" },
+        { en: "proportion", jp: "割合" },
+        { en: "proposal", jp: "提案" },
+        { en: "protection", jp: "保護" },
+        { en: "psychology", jp: "心理学" },
+        { en: "purpose", jp: "目的" },
+        { en: "quality", jp: "質" },
+        { en: "quantity", jp: "量" },
+        { en: "reaction", jp: "反応" },
+        { en: "reality", jp: "現実" },
+        { en: "recession", jp: "不景気" },
+        { en: "recommendation", jp: "推薦" },
+        { en: "relationship", jp: "関係" },
+        { en: "relative", jp: "親戚" },
+        { en: "reliability", jp: "信頼性" },
+        { en: "religion", jp: "宗教" },
+        { en: "reputation", jp: "評判" },
+        { en: "requirement", jp: "必要条件" },
+        { en: "research", jp: "研究" },
+        { en: "resident", jp: "住民" },
+        { en: "resource", jp: "資源" },
+        { en: "responsibility", jp: "責任" },
+        { en: "risk", jp: "リスク" },
+        { en: "role", jp: "役割" },
+        { en: "routine", jp: "日課" },
+        { en: "rumour", jp: "うわさ" },
+        { en: "salary", jp: "給料" },
+        { en: "sample", jp: "見本" },
+        { en: "satisfaction", jp: "満足" },
+        { en: "schedule", jp: "予定" },
+        { en: "security", jp: "安全" },
+        { en: "sense", jp: "感覚" },
+        { en: "sensitivity", jp: "敏感さ" },
+        { en: "series", jp: "シリーズ" },
+        { en: "shortage", jp: "不足" },
+        { en: "significance", jp: "重要性" },
+        { en: "situation", jp: "状況" },
+        { en: "skill", jp: "技能" },
+        { en: "society", jp: "社会" },
+        { en: "solution", jp: "解決策" },
+        { en: "source", jp: "情報源" },
+        { en: "species", jp: "種" },
+        { en: "stability", jp: "安定性" },
+        { en: "standard", jp: "基準" },
+        { en: "statistics", jp: "統計" },
+        { en: "status", jp: "地位" },
+        { en: "strategy", jp: "戦略" },
+        { en: "strength", jp: "強さ" },
+        { en: "structure", jp: "構造" },
+        { en: "substance", jp: "物質" },
+        { en: "suggestion", jp: "提案" },
+        { en: "summary", jp: "要約" },
+        { en: "support", jp: "支援" },
+        { en: "surface", jp: "表面" },
+        { en: "survey", jp: "調査" },
+        { en: "sympathy", jp: "同情" },
+        { en: "system", jp: "システム" },
+        { en: "talent", jp: "才能" },
+        { en: "target", jp: "目標" },
+        { en: "task", jp: "任務" },
+        { en: "technique", jp: "技術" },
+        { en: "technology", jp: "科学技術" },
+        { en: "temptation", jp: "誘惑" },
+        { en: "tendency", jp: "傾向" },
+        { en: "theory", jp: "理論" },
+        { en: "threat", jp: "脅威" },
+        { en: "tolerance", jp: "寛容" },
+        { en: "topic", jp: "話題" },
+        { en: "tradition", jp: "伝統" },
+        { en: "transport", jp: "輸送" },
+        { en: "trend", jp: "傾向" },
+        { en: "unemployment", jp: "失業" },
+        { en: "value", jp: "価値" },
+        { en: "variety", jp: "多様性" },
+        { en: "version", jp: "バージョン" },
+        { en: "violence", jp: "暴力" },
+        { en: "vision", jp: "展望" },
+        { en: "volume", jp: "量" },
+        { en: "wealth", jp: "富" },
+        { en: "weight", jp: "重さ" },
+        { en: "welfare", jp: "福祉" },
+      ];
+
+      let QUESTIONS_PER_GAME = 20; // now variable, set by start-screen buttons
+
+      let questions = [];
+      let currentIndex = 0;
+      let score = 0;
+      let wrongAnswers = [];
+
+      const startWrapper = document.getElementById("startWrapper");
+      const gameWrapper = document.getElementById("gameWrapper");
+      const resultsWrapper = document.getElementById("resultsWrapper");
+      const questionJpEl = document.getElementById("questionJp");
+      const answersEl = document.getElementById("answers");
+      const progressEl = document.getElementById("progress");
+      const scoreEl = document.getElementById("score");
+      const scoreSubEl = document.getElementById("scoreSub");
+      const mistakesTitleEl = document.getElementById("mistakesTitle");
+      const mistakesListEl = document.getElementById("mistakesList");
+      const playAgainBtn = document.getElementById("playAgainBtn");
+
+      function shuffle(array) {
+        const arr = array.slice();
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+      function buildQuestionBank() {
+        const nouns = shuffle(NOUN_BANK)
+          .slice(0, 100)
+          .map((item) => ({ ...item, type: "noun" }));
+
+        const adjectives = shuffle(ADJ_BANK)
+          .slice(0, Math.min(100, ADJ_BANK.length))
+          .map((item) => ({ ...item, type: "adjective" }));
+
+        const verbs = shuffle(VERB_BANK)
+          .slice(0, 100)
+          .map((item) => ({ ...item, type: "verb" }));
+
+        return shuffle([...nouns, ...adjectives, ...verbs]);
+      }
+
+      let QUESTIONS_BANK;
+      function startGame() {
+        QUESTIONS_BANK = buildQuestionBank();
+        questions = shuffle(QUESTIONS_BANK).slice(0, QUESTIONS_PER_GAME);
+        currentIndex = 0;
+        score = 0;
+        wrongAnswers = [];
+        startWrapper.style.display = "none";
+        resultsWrapper.style.display = "none";
+        gameWrapper.style.display = "flex";
+        progressEl.style.display = "block";
+        renderQuestion();
+      }
+
+      function renderQuestion() {
+        const q = questions[currentIndex];
+        progressEl.textContent =
+          "Question " + (currentIndex + 1) + " / " + QUESTIONS_PER_GAME;
+        questionJpEl.textContent = q.en;
+
+        const distractorPool = QUESTIONS_BANK.filter(
+          (v) => v.en !== q.en && v.type === q.type,
+        );
+        const distractors = shuffle(distractorPool).slice(0, 2);
+        const options = shuffle([q, ...distractors]);
+
+        answersEl.innerHTML = "";
+        options.forEach((opt) => {
+          const btn = document.createElement("button");
+          btn.className = "btn";
+          btn.textContent = opt.jp;
+          btn.addEventListener("click", () => handleAnswer(opt, q, btn));
+          answersEl.appendChild(btn);
+        });
+      }
+
+      function handleAnswer(selected, correctQ, clickedBtn) {
+        const allBtns = answersEl.querySelectorAll(".btn");
+        allBtns.forEach((b) => (b.disabled = true));
+
+        const isCorrect = selected.en === correctQ.en;
+
+        allBtns.forEach((b) => {
+          if (b.textContent === correctQ.jp) {
+            b.classList.add("correct");
+          } else if (b === clickedBtn) {
+            b.classList.add("wrong");
+          } else {
+            b.classList.add("dim");
+          }
+        });
+
+        if (isCorrect) {
+          score++;
+        } else {
+          wrongAnswers.push({
+            jp: correctQ.jp,
+            correct: correctQ.en,
+            chosen: selected.en,
+          });
+        }
+
+        setTimeout(() => {
+          currentIndex++;
+          if (currentIndex < questions.length) {
+            renderQuestion();
+          } else {
+            showResults();
+          }
+        }, 900);
+      }
+
+      function showResults() {
+        gameWrapper.style.display = "none";
+        progressEl.style.display = "none";
+        resultsWrapper.style.display = "flex";
+
+        scoreEl.textContent = score + " / " + QUESTIONS_PER_GAME;
+        if (score === QUESTIONS_PER_GAME) {
+          scoreSubEl.textContent = "Perfect score! 🎉";
+        } else if (score >= QUESTIONS_PER_GAME * 0.7) {
+          scoreSubEl.textContent = "Great job!";
+        } else {
+          scoreSubEl.textContent = "Keep practising!";
+        }
+
+        mistakesListEl.innerHTML = "";
+        if (wrongAnswers.length > 0) {
+          mistakesTitleEl.style.display = "block";
+          wrongAnswers.forEach((w) => {
+            const li = document.createElement("li");
+            const jpSpan = document.createElement("span");
+            jpSpan.className = "jp";
+            jpSpan.textContent = w.jp;
+            const enSpan = document.createElement("span");
+            enSpan.className = "en";
+            enSpan.textContent = w.correct;
+            li.appendChild(jpSpan);
+            li.appendChild(enSpan);
+            mistakesListEl.appendChild(li);
+          });
+        } else {
+          mistakesTitleEl.style.display = "none";
+        }
+      }
+
+      // start-screen buttons pick the question count and begin the game
+      document.querySelectorAll(".start-buttons .btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          QUESTIONS_PER_GAME = parseInt(btn.dataset.count, 10);
+          startGame();
+        });
+      });
+
+      // play again re-shows the start screen so a new count can be picked
+      playAgainBtn.addEventListener("click", () => {
+        resultsWrapper.style.display = "none";
+        startWrapper.style.display = "flex";
+      });
+    </script>
+  </body>
+</html>

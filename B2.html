@@ -13,6 +13,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Adventure Island" />
 
+    <!-- App icons (multiple resolutions) -->
+    <link rel="apple-touch-icon" href="jhs1hp.png" />
+
+    <link rel="manifest" href="manifest.json" />
+
     <title>Speaking Adventure</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -36,9 +41,9 @@
         --font-chalk:
           "Chalkboard SE", "Comic Sans MS", "Segoe Print", sans-serif;
         --colour-btn-face: black;
-        --colour-btn-active: black;
+        --colour-btn-active: darkgray;
         --colour-btn-border: #000000;
-        --colour-heading-text: darkorange;
+        --colour-heading-text: orange;
       }
 
       html,
@@ -48,22 +53,6 @@
         overflow-x: hidden;
         max-width: 100vw;
       }
-
-      body {
-        font-family: var(--font-chalk);
-        background-color: grey;
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        min-height: 100vh;
-        min-height: 100dvh;
-        overflow: hidden;
-        transition: background 0.3s ease;
-      }
       .back-btn {
         position: fixed;
         top: max(16px, env(safe-area-inset-top, 16px));
@@ -72,7 +61,7 @@
         display: flex;
         align-items: center;
         gap: 0.3em;
-        background: lightgray;
+        background: gray;
         color: black;
         border: 2px solid var(--colour-btn-border);
         border-radius: 999px;
@@ -89,6 +78,22 @@
         transform: translateY(2px);
         background: var(--colour-btn-active);
       }
+      body {
+        font-family: var(--font-chalk);
+        background-color: #8b5a2b;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow: hidden;
+        transition: background 0.3s ease;
+      }
+
       h1 {
         font-family: var(--font-chalk);
         color: var(--colour-heading-text);
@@ -96,7 +101,7 @@
         text-align: center;
         letter-spacing: 0.03em;
         flex-shrink: 0;
-        -webkit-text-stroke: 1px yellow;
+        -webkit-text-stroke: 2px darkred;
       }
 
       .grid-wrapper {
@@ -126,7 +131,7 @@
         overflow: hidden;
         -webkit-user-select: none;
         user-select: none;
-        -webkit-text-stroke: 1px darkorange;
+        -webkit-text-stroke: 2px darkred;
         transition:
           transform 0.1s ease,
           background 0.15s ease;
@@ -156,7 +161,7 @@
       /* LANDSCAPE */
       @media screen and (orientation: landscape) {
         body {
-          background-image: url("jhs1land.png");
+          background-image: url("saland.png");
           background-size: cover;
           background-position: center center;
           background-repeat: no-repeat;
@@ -192,7 +197,7 @@
       /* LANDSCAPE IPHONE */
       @media screen and (orientation: landscape) and (max-height: 450px) {
         body {
-          background-image: url("jhs1land.png");
+          background-image: url("saland.png");
           background-size: cover;
           background-position: center center;
           background-repeat: no-repeat;
@@ -227,7 +232,7 @@
       @media screen and (orientation: portrait) {
         body {
           overflow-y: auto;
-          background-image: url("jhs1port.png");
+          background-image: url("saport.png");
           background-size: cover;
           background-position: center center;
           background-repeat: no-repeat;
@@ -284,16 +289,18 @@
   </head>
 
   <body>
-    <h1>Grammar</h1>
-    <a class="back-btn" href="A2.html">← Back</a>
+    <h1>CEFR B2</h1>
+    <a class="back-btn" href="index.html">← Back</a>
     <div class="grid-wrapper">
       <div class="grid" id="main-grid">
-        <a class="btn" href="right.html" style="background-color: darkgray">
-          <span class="btn-text">Right or Wrong</span>
+        <a class="btn" href="grammar2.html" style="background-color: #14213d">
+          <span class="btn-text">Grammar</span>
+          <img class="btn-icon" src="s2.png" alt="" />
         </a>
 
-        <a class="btn" href="missing.html" style="background-color: darkgray">
-          <span class="btn-text">Missing Word</span>
+        <a class="btn" href="vocab2.html" style="background-color: #14213d">
+          <span class="btn-text">Vocabulary</span>
+          <img class="btn-icon" src="k2.png" alt="" />
         </a>
       </div>
     </div>

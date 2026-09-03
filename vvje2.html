@@ -18,7 +18,7 @@
     />
     <meta name="apple-mobile-web-app-title" content="Noun Quiz" />
 
-    <title>Adjecives Quiz</title>
+    <title>Vocabulary Quiz</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com/" />
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
@@ -42,8 +42,8 @@
           "Chalkboard SE", "Comic Sans MS", "Segoe Print", sans-serif;
         --font-jp:
           "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-        --colour-btn-face: darkgrey;
-        --colour-btn-active: darkgrey;
+        --colour-btn-face: navy;
+        --colour-btn-active: #1a1a70;
         --colour-btn-border: #000000;
         --colour-heading-text: orange;
         --colour-correct: #4caf50;
@@ -56,7 +56,7 @@
         position: fixed;
         inset: 0;
         z-index: 100;
-        background: grey;
+        background: #0d1b33;
         align-items: center;
         justify-content: center;
         text-align: center;
@@ -81,7 +81,7 @@
 
       body {
         font-family: var(--font-chalk);
-        background-color: grey; /* dark pink */
+        background-color: #1a2744;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -90,6 +90,7 @@
         min-height: 100dvh;
         overflow: hidden;
         transition: background 0.3s ease;
+        color: orange;
       }
 
       h1 {
@@ -114,7 +115,7 @@
         align-items: center;
         gap: 0.3em;
         background: var(--colour-btn-face);
-        color: var(--colour-btn-border);
+        color: var(--colour-heading-text);
         border: 2px solid var(--colour-btn-border);
         border-radius: 999px;
         padding: 0.4em 0.9em;
@@ -191,7 +192,7 @@
       .question-jp {
         font-size: clamp(2rem, 11vw, 4.5rem);
         color: #333;
-        font-family: var(--font-chalk);
+        font-family: var(--font-jp);
         line-height: 1.3;
       }
 
@@ -206,7 +207,7 @@
       .btn {
         font-family: var(--font-chalk);
         font-weight: bold;
-        color: #333;
+        color: var(--colour-heading-text);
         background: var(--colour-btn-face);
         border: 2px solid var(--colour-btn-border);
         border-radius: 10px;
@@ -377,8 +378,8 @@
       <p>🔄 Please rotate your device to portrait mode!</p>
     </div>
 
-    <a class="back-btn" href="va.html">← Back</a>
-    <h1>Adjectives Quiz</h1>
+    <a class="back-btn" href="vv2.html">← Back</a>
+    <h1>Verbs Quiz</h1>
     <div class="progress" id="progress" style="display: none">
       Question 1 / 20
     </div>
@@ -412,204 +413,200 @@
     <script>
       // ---- Noun bank: English noun + Japanese meaning ----
       const VERB_BANK = [
-        { en: "able", jp: "できる" },
-        { en: "afraid", jp: "怖がって" },
-        { en: "alone", jp: "ひとりで" },
-        { en: "amazing", jp: "驚くべき" },
-        { en: "angry", jp: "怒っている" },
-        { en: "attractive", jp: "魅力的な" },
-        { en: "available", jp: "利用できる" },
-        { en: "awesome", jp: "すごい" },
-        { en: "awful", jp: "ひどい" },
-        { en: "bad", jp: "悪い" },
-        { en: "beautiful", jp: "美しい" },
-        { en: "better", jp: "もっと良い" },
-        { en: "big", jp: "大きい" },
-        { en: "black", jp: "黒い" },
-        { en: "blue", jp: "青い" },
-        { en: "bored", jp: "退屈している" },
-        { en: "boring", jp: "退屈な" },
-        { en: "brave", jp: "勇敢な" },
-        { en: "bright", jp: "明るい" },
-        { en: "brilliant", jp: "すばらしい" },
-        { en: "broken", jp: "壊れた" },
-        { en: "brown", jp: "茶色い" },
-        { en: "busy", jp: "忙しい" },
-        { en: "careful", jp: "注意深い" },
-        { en: "cheap", jp: "安い" },
-        { en: "classical", jp: "古典的な" },
-        { en: "clear", jp: "明確な" },
-        { en: "clever", jp: "賢い" },
-        { en: "closed", jp: "閉まっている" },
-        { en: "cloudy", jp: "曇りの" },
-        { en: "cold", jp: "寒い" },
-        { en: "comfortable", jp: "快適な" },
-        { en: "cool", jp: "かっこいい" },
-        { en: "correct", jp: "正しい" },
-        { en: "crazy", jp: "頭がおかしい" },
-        { en: "crowded", jp: "混雑した" },
-        { en: "dangerous", jp: "危険な" },
-        { en: "dark", jp: "暗い" },
-        { en: "dead", jp: "死んでいる" },
-        { en: "dear", jp: "親愛なる" },
-        { en: "deep", jp: "深い" },
-        { en: "delicious", jp: "おいしい" },
-        { en: "different", jp: "違う" },
-        { en: "difficult", jp: "難しい" },
-        { en: "digital", jp: "デジタルの" },
-        { en: "dirty", jp: "汚い" },
-        { en: "double", jp: "二重の" },
-        { en: "dry", jp: "乾いた" },
-        { en: "early", jp: "早い" },
-        { en: "easy", jp: "簡単な" },
-        { en: "empty", jp: "空の" },
-        { en: "excellent", jp: "優れた" },
-        { en: "expensive", jp: "高価な" },
-        { en: "extra", jp: "余分な" },
-        { en: "fair", jp: "公平な" },
-        { en: "famous", jp: "有名な" },
-        { en: "fantastic", jp: "すばらしい" },
-        { en: "fast", jp: "速い" },
-        { en: "fat", jp: "太った" },
-        { en: "favourite", jp: "お気に入りの" },
-        { en: "few", jp: "少しの" },
-        { en: "final", jp: "最後の" },
-        { en: "fine", jp: "元気な" },
-        { en: "first", jp: "最初の" },
-        { en: "fit", jp: "健康な" },
-        { en: "foggy", jp: "霧の" },
-        { en: "foreign", jp: "外国の" },
-        { en: "free", jp: "自由な" },
-        { en: "fresh", jp: "新鮮な" },
-        { en: "fried", jp: "揚げた" },
-        { en: "friendly", jp: "親切な" },
-        { en: "frightened", jp: "怖がっている" },
-        { en: "full", jp: "いっぱいの" },
-        { en: "funny", jp: "面白い" },
-        { en: "glad", jp: "うれしい" },
-        { en: "golden", jp: "金色の" },
-        { en: "good", jp: "良い" },
-        { en: "great", jp: "すばらしい" },
-        { en: "green", jp: "緑の" },
-        { en: "grey", jp: "灰色の" },
-        { en: "grilled", jp: "焼いた" },
-        { en: "happy", jp: "幸せな" },
-        { en: "hard", jp: "硬い" },
-        { en: "healthy", jp: "健康的な" },
-        { en: "heavy", jp: "重い" },
-        { en: "high", jp: "高い" },
-        { en: "hot", jp: "暑い" },
-        { en: "hungry", jp: "空腹な" },
-        { en: "important", jp: "重要な" },
-        { en: "indoor", jp: "屋内の" },
-        { en: "interested", jp: "興味がある" },
-        { en: "interesting", jp: "面白い" },
-        { en: "international", jp: "国際的な" },
-        { en: "kind", jp: "親切な" },
-        { en: "large", jp: "大きい" },
-        { en: "last", jp: "最後の" },
-        { en: "late", jp: "遅い" },
-        { en: "latest", jp: "最新の" },
-        { en: "left", jp: "左の" },
-        { en: "light", jp: "軽い" },
-        { en: "little", jp: "小さい" },
-        { en: "local", jp: "地元の" },
-        { en: "long", jp: "長い" },
-        { en: "loud", jp: "うるさい" },
-        { en: "lovely", jp: "すてきな" },
-        { en: "low", jp: "低い" },
-        { en: "lucky", jp: "幸運な" },
-        { en: "mad", jp: "怒っている" },
-        { en: "main", jp: "主な" },
-        { en: "married", jp: "結婚している" },
-        { en: "metal", jp: "金属の" },
-        { en: "missing", jp: "行方不明の" },
-        { en: "modern", jp: "現代的な" },
-        { en: "musical", jp: "音楽の" },
-        { en: "national", jp: "全国の" },
-        { en: "next", jp: "次の" },
-        { en: "nice", jp: "すてきな" },
-        { en: "noisy", jp: "うるさい" },
-        { en: "normal", jp: "普通の" },
-        { en: "old", jp: "古い" },
-        { en: "online", jp: "オンラインの" },
-        { en: "only", jp: "唯一の" },
-        { en: "open", jp: "開いている" },
-        { en: "opposite", jp: "反対の" },
-        { en: "orange", jp: "オレンジ色の" },
-        { en: "outdoor", jp: "屋外の" },
-        { en: "own", jp: "自分自身の" },
-        { en: "pale", jp: "青白い" },
-        { en: "perfect", jp: "完璧な" },
-        { en: "pink", jp: "ピンク色の" },
-        { en: "plastic", jp: "プラスチックの" },
-        { en: "pleasant", jp: "心地よい" },
-        { en: "pleased", jp: "喜んでいる" },
-        { en: "polite", jp: "礼儀正しい" },
-        { en: "poor", jp: "貧しい" },
-        { en: "popular", jp: "人気のある" },
-        { en: "possible", jp: "可能な" },
-        { en: "pretty", jp: "かわいい" },
-        { en: "purple", jp: "紫の" },
-        { en: "quick", jp: "すばやい" },
-        { en: "quiet", jp: "静かな" },
-        { en: "ready", jp: "準備ができた" },
-        { en: "real", jp: "本当の" },
-        { en: "red", jp: "赤い" },
-        { en: "rich", jp: "裕福な" },
-        { en: "right", jp: "正しい" },
-        { en: "round", jp: "丸い" },
-        { en: "sad", jp: "悲しい" },
-        { en: "safe", jp: "安全な" },
-        { en: "same", jp: "同じ" },
-        { en: "scared", jp: "怖がっている" },
-        { en: "scary", jp: "怖い" },
-        { en: "second", jp: "二番目の" },
-        { en: "short", jp: "短い" },
-        { en: "silver", jp: "銀色の" },
-        { en: "simple", jp: "簡単な" },
-        { en: "single", jp: "独身の" },
-        { en: "slim", jp: "ほっそりした" },
-        { en: "slow", jp: "遅い" },
-        { en: "small", jp: "小さい" },
-        { en: "soft", jp: "柔らかい" },
-        { en: "sorry", jp: "すまなく思う" },
-        { en: "spare", jp: "予備の" },
-        { en: "special", jp: "特別な" },
-        { en: "straight", jp: "まっすぐな" },
-        { en: "strange", jp: "奇妙な" },
-        { en: "striped", jp: "しま模様の" },
-        { en: "strong", jp: "強い" },
-        { en: "successful", jp: "成功した" },
-        { en: "sunny", jp: "晴れた" },
-        { en: "sure", jp: "確信している" },
-        { en: "sweet", jp: "甘い" },
-        { en: "tall", jp: "背が高い" },
-        { en: "terrible", jp: "ひどい" },
-        { en: "thin", jp: "やせた" },
-        { en: "thirsty", jp: "喉が渇いた" },
-        { en: "tired", jp: "疲れた" },
-        { en: "total", jp: "全体の" },
-        { en: "true", jp: "本当の" },
-        { en: "unhappy", jp: "不幸な" },
-        { en: "unusual", jp: "珍しい" },
-        { en: "upset", jp: "動揺している" },
-        { en: "useful", jp: "役に立つ" },
-        { en: "usual", jp: "いつもの" },
-        { en: "warm", jp: "暖かい" },
-        { en: "well", jp: "元気な" },
-        { en: "wet", jp: "濡れた" },
-        { en: "white", jp: "白い" },
-        { en: "whole", jp: "全体の" },
-        { en: "wide", jp: "幅の広い" },
-        { en: "wild", jp: "野生の" },
-        { en: "windy", jp: "風の強い" },
-        { en: "wonderful", jp: "すばらしい" },
-        { en: "wooden", jp: "木製の" },
-        { en: "worried", jp: "心配している" },
-        { en: "wrong", jp: "間違った" },
-        { en: "yellow", jp: "黄色い" },
-        { en: "young", jp: "若い" },
+        { en: "achieve", jp: "達成する" },
+        { en: "acknowledge", jp: "認める" },
+        { en: "adapt", jp: "適応する" },
+        { en: "admit", jp: "認める" },
+        { en: "afford", jp: "余裕がある" },
+        { en: "aim", jp: "目指す" },
+        { en: "analyse", jp: "分析する" },
+        { en: "announce", jp: "発表する" },
+        { en: "apologise", jp: "謝罪する" },
+        { en: "appear", jp: "現れる" },
+        { en: "apply", jp: "応募する" },
+        { en: "approach", jp: "取り組む" },
+        { en: "approve", jp: "承認する" },
+        { en: "argue", jp: "議論する" },
+        { en: "arrange", jp: "手配する" },
+        { en: "assume", jp: "想定する" },
+        { en: "assure", jp: "保証する" },
+        { en: "attach", jp: "添付する" },
+        { en: "attempt", jp: "試みる" },
+        { en: "attend", jp: "出席する" },
+        { en: "attract", jp: "引きつける" },
+        { en: "avoid", jp: "避ける" },
+        { en: "base", jp: "基づかせる" },
+        { en: "behave", jp: "振る舞う" },
+        { en: "benefit", jp: "利益を得る" },
+        { en: "blame", jp: "非難する" },
+        { en: "bother", jp: "悩ませる" },
+        { en: "calculate", jp: "計算する" },
+        { en: "campaign", jp: "運動する" },
+        { en: "cause", jp: "引き起こす" },
+        { en: "challenge", jp: "異議を唱える" },
+        { en: "claim", jp: "主張する" },
+        { en: "combine", jp: "組み合わせる" },
+        { en: "commit", jp: "約束する" },
+        { en: "communicate", jp: "意思疎通する" },
+        { en: "compare", jp: "比較する" },
+        { en: "compete", jp: "競争する" },
+        { en: "complain", jp: "苦情を言う" },
+        { en: "concentrate", jp: "集中する" },
+        { en: "concern", jp: "関係する" },
+        { en: "conclude", jp: "結論づける" },
+        { en: "confirm", jp: "確認する" },
+        { en: "connect", jp: "つなげる" },
+        { en: "consider", jp: "考慮する" },
+        { en: "consist", jp: "構成される" },
+        { en: "contain", jp: "含む" },
+        { en: "continue", jp: "継続する" },
+        { en: "contribute", jp: "貢献する" },
+        { en: "convince", jp: "納得させる" },
+        { en: "cope", jp: "対処する" },
+        { en: "create", jp: "創造する" },
+        { en: "criticise", jp: "批判する" },
+        { en: "damage", jp: "損害を与える" },
+        { en: "deal", jp: "対処する" },
+        { en: "debate", jp: "討論する" },
+        { en: "declare", jp: "宣言する" },
+        { en: "define", jp: "定義する" },
+        { en: "delay", jp: "遅らせる" },
+        { en: "deliver", jp: "配達する" },
+        { en: "demand", jp: "要求する" },
+        { en: "deny", jp: "否定する" },
+        { en: "depend", jp: "頼る" },
+        { en: "describe", jp: "描写する" },
+        { en: "deserve", jp: "値する" },
+        { en: "design", jp: "設計する" },
+        { en: "determine", jp: "決定する" },
+        { en: "develop", jp: "発展させる" },
+        { en: "differ", jp: "異なる" },
+        { en: "disagree", jp: "意見が合わない" },
+        { en: "discover", jp: "発見する" },
+        { en: "discuss", jp: "議論する" },
+        { en: "distinguish", jp: "区別する" },
+        { en: "divide", jp: "分ける" },
+        { en: "doubt", jp: "疑う" },
+        { en: "encourage", jp: "励ます" },
+        { en: "engage", jp: "従事する" },
+        { en: "ensure", jp: "確実にする" },
+        { en: "establish", jp: "確立する" },
+        { en: "estimate", jp: "見積もる" },
+        { en: "examine", jp: "調べる" },
+        { en: "exceed", jp: "超える" },
+        { en: "exchange", jp: "交換する" },
+        { en: "exist", jp: "存在する" },
+        { en: "expand", jp: "拡大する" },
+        { en: "expect", jp: "期待する" },
+        { en: "experience", jp: "経験する" },
+        { en: "explain", jp: "説明する" },
+        { en: "expose", jp: "さらす" },
+        { en: "express", jp: "表現する" },
+        { en: "extend", jp: "延長する" },
+        { en: "face", jp: "直面する" },
+        { en: "fail", jp: "失敗する" },
+        { en: "focus", jp: "集中する" },
+        { en: "force", jp: "強制する" },
+        { en: "forgive", jp: "許す" },
+        { en: "found", jp: "設立する" },
+        { en: "gain", jp: "得る" },
+        { en: "guarantee", jp: "保証する" },
+        { en: "handle", jp: "扱う" },
+        { en: "identify", jp: "特定する" },
+        { en: "ignore", jp: "無視する" },
+        { en: "imagine", jp: "想像する" },
+        { en: "impress", jp: "感銘を与える" },
+        { en: "improve", jp: "改善する" },
+        { en: "include", jp: "含める" },
+        { en: "increase", jp: "増加する" },
+        { en: "indicate", jp: "示す" },
+        { en: "influence", jp: "影響を与える" },
+        { en: "inform", jp: "知らせる" },
+        { en: "insist", jp: "主張する" },
+        { en: "inspire", jp: "鼓舞する" },
+        { en: "install", jp: "設置する" },
+        { en: "intend", jp: "意図する" },
+        { en: "introduce", jp: "紹介する" },
+        { en: "investigate", jp: "調査する" },
+        { en: "involve", jp: "含む" },
+        { en: "justify", jp: "正当化する" },
+        { en: "lack", jp: "欠けている" },
+        { en: "lead", jp: "導く" },
+        { en: "limit", jp: "制限する" },
+        { en: "maintain", jp: "維持する" },
+        { en: "manage", jp: "管理する" },
+        { en: "manufacture", jp: "製造する" },
+        { en: "measure", jp: "測る" },
+        { en: "mention", jp: "言及する" },
+        { en: "motivate", jp: "動機づける" },
+        { en: "negotiate", jp: "交渉する" },
+        { en: "notice", jp: "気づく" },
+        { en: "obtain", jp: "手に入れる" },
+        { en: "occur", jp: "起こる" },
+        { en: "operate", jp: "操作する" },
+        { en: "organise", jp: "組織する" },
+        { en: "participate", jp: "参加する" },
+        { en: "perform", jp: "行う" },
+        { en: "persuade", jp: "説得する" },
+        { en: "predict", jp: "予測する" },
+        { en: "prefer", jp: "好む" },
+        { en: "prepare", jp: "準備する" },
+        { en: "present", jp: "提示する" },
+        { en: "prevent", jp: "防ぐ" },
+        { en: "produce", jp: "生産する" },
+        { en: "promise", jp: "約束する" },
+        { en: "promote", jp: "促進する" },
+        { en: "propose", jp: "提案する" },
+        { en: "protect", jp: "保護する" },
+        { en: "prove", jp: "証明する" },
+        { en: "provide", jp: "提供する" },
+        { en: "publish", jp: "出版する" },
+        { en: "pursue", jp: "追求する" },
+        { en: "react", jp: "反応する" },
+        { en: "realise", jp: "気づく" },
+        { en: "recall", jp: "思い出す" },
+        { en: "recognise", jp: "認識する" },
+        { en: "recommend", jp: "推薦する" },
+        { en: "reduce", jp: "減らす" },
+        { en: "refer", jp: "言及する" },
+        { en: "reflect", jp: "反映する" },
+        { en: "refuse", jp: "拒否する" },
+        { en: "regard", jp: "みなす" },
+        { en: "regret", jp: "後悔する" },
+        { en: "reject", jp: "拒絶する" },
+        { en: "relate", jp: "関連づける" },
+        { en: "release", jp: "解放する" },
+        { en: "rely", jp: "頼る" },
+        { en: "remain", jp: "残る" },
+        { en: "remove", jp: "取り除く" },
+        { en: "replace", jp: "取り替える" },
+        { en: "represent", jp: "代表する" },
+        { en: "require", jp: "必要とする" },
+        { en: "research", jp: "研究する" },
+        { en: "resolve", jp: "解決する" },
+        { en: "respond", jp: "応答する" },
+        { en: "reveal", jp: "明らかにする" },
+        { en: "risk", jp: "危険にさらす" },
+        { en: "satisfy", jp: "満足させる" },
+        { en: "seek", jp: "探し求める" },
+        { en: "select", jp: "選択する" },
+        { en: "separate", jp: "分離する" },
+        { en: "settle", jp: "解決する" },
+        { en: "shift", jp: "移す" },
+        { en: "solve", jp: "解決する" },
+        { en: "specialise", jp: "専門にする" },
+        { en: "state", jp: "述べる" },
+        { en: "struggle", jp: "苦闘する" },
+        { en: "succeed", jp: "成功する" },
+        { en: "suffer", jp: "苦しむ" },
+        { en: "supply", jp: "供給する" },
+        { en: "support", jp: "支援する" },
+        { en: "survive", jp: "生き残る" },
+        { en: "suspect", jp: "疑う" },
+        { en: "tend", jp: "傾向がある" },
+        { en: "threaten", jp: "脅す" },
+        { en: "trust", jp: "信頼する" },
+        { en: "warn", jp: "警告する" },
       ];
 
       let QUESTIONS_PER_GAME = 20; // now variable, set by start-screen buttons
@@ -656,7 +653,7 @@
         const q = questions[currentIndex];
         progressEl.textContent =
           "Question " + (currentIndex + 1) + " / " + QUESTIONS_PER_GAME;
-        questionJpEl.textContent = q.en;
+        questionJpEl.textContent = q.jp; // changed from q.jp
 
         const distractorPool = VERB_BANK.filter((v) => v.en !== q.en);
         const distractors = shuffle(distractorPool).slice(0, 2);
@@ -666,7 +663,7 @@
         options.forEach((opt) => {
           const btn = document.createElement("button");
           btn.className = "btn";
-          btn.textContent = opt.jp;
+          btn.textContent = opt.en; // changed from opt.en
           btn.addEventListener("click", () => handleAnswer(opt, q, btn));
           answersEl.appendChild(btn);
         });
@@ -679,7 +676,7 @@
         const isCorrect = selected.en === correctQ.en;
 
         allBtns.forEach((b) => {
-          if (b.textContent === correctQ.jp) {
+          if (b.textContent === correctQ.en) {
             b.classList.add("correct");
           } else if (b === clickedBtn) {
             b.classList.add("wrong");
@@ -707,7 +704,6 @@
           }
         }, 900);
       }
-
       function showResults() {
         gameWrapper.style.display = "none";
         progressEl.style.display = "none";

@@ -35,8 +35,8 @@
       :root {
         --font-chalk:
           "Chalkboard SE", "Comic Sans MS", "Segoe Print", sans-serif;
-        --colour-btn-face: black;
-        --colour-btn-active: darkgrey;
+        --colour-btn-face: navy;
+        --colour-btn-active: black;
         --colour-btn-border: #000000;
         --colour-heading-text: darkorange;
       }
@@ -51,7 +51,7 @@
 
       body {
         font-family: var(--font-chalk);
-        background-color: grey;
+        background-color: #14213d;
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
@@ -72,17 +72,17 @@
         display: flex;
         align-items: center;
         gap: 0.3em;
-        background: darkgrey;
+        background: lightgray;
         color: black;
         border: 2px solid var(--colour-btn-border);
         border-radius: 999px;
         padding: 0.4em 0.9em;
         font-family: var(--font-chalk);
         font-weight: bold;
+
         font-size: 1rem;
         text-decoration: none;
         cursor: pointer;
-        -webkit-text-stroke: 0;
         transition: transform 0.1s ease;
       }
       .back-btn:active {
@@ -112,7 +112,7 @@
         font-family: var(--font-chalk);
         font-weight: bold;
         color: yellow;
-        background: pink;
+        background: grey;
         border: 2px solid var(--colour-btn-border);
         border-radius: 10px;
         text-decoration: none;
@@ -126,7 +126,7 @@
         overflow: hidden;
         -webkit-user-select: none;
         user-select: none;
-        -webkit-text-stroke: 2px darkorange;
+        -webkit-text-stroke: 1px darkorange;
         transition:
           transform 0.1s ease,
           background 0.15s ease;
@@ -284,16 +284,16 @@
   </head>
 
   <body>
-    <h1>Verbs</h1>
-    <a class="back-btn" href="vocab.html">← Back</a>
+    <h1>Grammar</h1>
+    <a class="back-btn" href="B2.html">← Back</a>
     <div class="grid-wrapper">
       <div class="grid" id="main-grid">
-        <a class="btn" href="vvej.html" style="background-color: darkgray">
-          <span class="btn-text">English to Japanese</span>
+        <a class="btn" href="right2.html" style="background-color: lightgray">
+          <span class="btn-text">Right or Wrong</span>
         </a>
 
-        <a class="btn" href="vvje.html" style="background-color: darkgray">
-          <span class="btn-text">Japanese to English</span>
+        <a class="btn" href="missing2.html" style="background-color: lightgray">
+          <span class="btn-text">Missing Word</span>
         </a>
       </div>
     </div>
